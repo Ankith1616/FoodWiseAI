@@ -1,0 +1,26 @@
+# Node/Mobile ignores
+node_modules/
+.expo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vscode/
+
+# Python ignores
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+*.log
+
+# Environment config (Secrets)
+.env
+
+# OS ignores
+.DS_Store
+Thumbs.db
+
+# Backup ignores
+FoodWiseAi/
