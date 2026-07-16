@@ -1,0 +1,1 @@
+# FoodWiseAI Core Module
