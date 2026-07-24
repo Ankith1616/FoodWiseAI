@@ -12,3 +12,9 @@ router = APIRouter()
 # ── Mount domain routers here ────────────────────────────
 router.include_router(recommendations_router, prefix="/recommendations", tags=["recommendations"])
 
+
+@router.get("/health", tags=["health"])
+async def health_check():
+    """V1 API health check endpoint."""
+    return {"status": "healthy"}
+

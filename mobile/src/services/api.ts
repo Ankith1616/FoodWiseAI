@@ -6,7 +6,8 @@
 
 import axios from "axios";
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000";
+const rawBaseUrl = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE_URL = rawBaseUrl.endsWith("/api/v1") ? rawBaseUrl : `${rawBaseUrl}/api/v1`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
