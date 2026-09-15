@@ -1,0 +1,6 @@
+{
+  "status": "trained",
+  "input_dim": 16,
+  "latent_dim": 64,
+  "epochs": 20
+}

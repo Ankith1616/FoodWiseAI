@@ -2,11 +2,39 @@
  * FoodWiseAI — Axios Instance
  *
  * Configured HTTP client for backend API communication.
+ * Automatically resolves the host IP for Expo Go / native mobile devices.
  */
 
 import axios from "axios";
+import Constants from "expo-constants";
+import { Platform } from "react-native";
 
-const rawBaseUrl = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000";
+const getBaseUrl = (): string => {
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+  if (Platform.OS === "web") {
+    return "http://localhost:8000";
+  }
+
+  // Attempt to resolve host IP from Expo manifest for Expo Go / native mobile
+  const hostUri = Constants.expoConfig?.hostUri || (Constants as any).manifest2?.extra?.expoGo?.debuggerHost;
+  if (hostUri) {
+    const hostIp = hostUri.split(":")[0];
+    if (hostIp) {
+      return `http://${hostIp}:8000`;
+    }
+  }
+
+  // Android emulator fallback
+  if (Platform.OS === "android") {
+    return "http://10.0.2.2:8000";
+  }
+
+  return "http://localhost:8000";
+};
+
+export const rawBaseUrl = getBaseUrl();
 const API_BASE_URL = rawBaseUrl.endsWith("/api/v1") ? rawBaseUrl : `${rawBaseUrl}/api/v1`;
 
 const api = axios.create({
@@ -17,22 +45,14 @@ const api = axios.create({
   },
 });
 
-// Request interceptor — will be configured with auth tokens in Phase 2
 api.interceptors.request.use(
-  (config) => {
-    // TODO: Attach JWT token from secure storage
-    return config;
-  },
+  (config) => config,
   (error) => Promise.reject(error)
 );
 
-// Response interceptor — will be configured with token refresh in Phase 2
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // TODO: Handle 401 and attempt token refresh
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default api;

@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import router as v1_router
 from app.core.config import settings
+from fastapi.staticfiles import StaticFiles
 
 
 @asynccontextmanager
@@ -42,6 +43,17 @@ app.add_middleware(
 
 # ── Routes ───────────────────────────────────────────────
 app.include_router(v1_router, prefix=settings.API_V1_PREFIX)
+
+# Serve static assets (like dish images and dataset)
+from pathlib import Path
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+DATASET_DIR = Path(__file__).resolve().parent.parent.parent / "Dataset"
+if DATASET_DIR.exists():
+    app.mount("/dataset", StaticFiles(directory=str(DATASET_DIR)), name="dataset")
+
 
 
 @app.get("/health", tags=["health"])

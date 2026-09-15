@@ -1,0 +1,5 @@
+{
+  "status": "trained",
+  "embedding_dim": 128,
+  "epochs": 5
+}

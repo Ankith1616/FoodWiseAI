@@ -1,0 +1,6 @@
+{
+  "status": "trained",
+  "user_dim": 64,
+  "dish_dim": 128,
+  "epochs": 15
+}
