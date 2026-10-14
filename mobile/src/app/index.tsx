@@ -34,50 +34,56 @@ const isWeb = Platform.OS === 'web';
 
 // ── Dish image helper ─────────────────────────────────────────
 const IMG = (filename: string) => {
-  if (!filename) return `${rawBaseUrl}/dataset/images.jpeg`;
+  if (!filename) return `${rawBaseUrl}/dataset/Egg/0.jpg`;
   if (filename.startsWith('/dataset/') || filename.startsWith('/static/')) {
     return `${rawBaseUrl}${filename}`;
   }
   return `${rawBaseUrl}/dataset/${filename}`;
 };
 
-// ── Full seeded catalog matching all 20 dataset files ────────
+// ── Full seeded catalog matching Food-11 dataset files ────────
 const ALL_DISHES = [
-  { id: 1,  name: 'Chicken Lollipop Drums',     restaurant: 'Spice Station',         price: 260, rating: 4.8, category: 'Indian',    img: 'best_chicken_lollipop_drums_of_chicken-500x500.jpg', kcal: 450, protein: 32, match: 98, reason: 'High visual similarity to spicy chicken appetizer embeddings.' },
-  { id: 2,  name: 'Spicy Chicken Lollipop',      restaurant: 'Asian Wok & Grill',     price: 270, rating: 4.7, category: 'Fast Food', img: 'chicken-lollipop-1-500x500.webp',                   kcal: 430, protein: 28, match: 96, reason: 'Crispy glazed drumstick pattern matches your swipe preferences.' },
-  { id: 3,  name: 'Crispy Chicken Lollipops',    restaurant: 'The Sizzler House',     price: 250, rating: 4.6, category: 'Fast Food', img: 'chicken-lollipop-480x270.jpg',                     kcal: 410, protein: 26, match: 94, reason: 'Sizzling fried chicken texture matches dimension 40-55.' },
-  { id: 4,  name: 'Paneer Tikka Skewers',       restaurant: 'Grill Station',         price: 240, rating: 4.6, category: 'Indian',    img: 'image-358.png',                                       kcal: 390, protein: 24, match: 93, reason: 'Grilled paneer visual texture vectors — strong match to your Indian profile.' },
-  { id: 5,  name: 'Gourmet Chicken Bowl',        restaurant: 'Healthy Bytes',         price: 290, rating: 4.5, category: 'Healthy',   img: 'images (1).jpeg',                                     kcal: 380, protein: 34, match: 91, reason: 'Lean protein source — cosine similarity 0.91 to your health vector.' },
-  { id: 6,  name: 'Chef Special Curry',          restaurant: 'Punjabi Rasoi',         price: 230, rating: 4.4, category: 'Indian',    img: 'images (2).jpeg',                                     kcal: 420, protein: 18, match: 90, reason: 'Rich tomato gravy texture matches your Indian spice profile.' },
-  { id: 7,  name: 'Crispy Samosa Platter',       restaurant: 'Street Bites',          price: 140, rating: 4.3, category: 'Fast Food', img: 'images (3).jpeg',                                     kcal: 320, protein: 8,  match: 86, reason: 'Gold fried pastry visual features match snack profile.' },
-  { id: 8,  name: 'Masala Dosa Supreme',         restaurant: 'South Express',         price: 160, rating: 4.7, category: 'Indian',    img: 'images (4).jpeg',                                     kcal: 340, protein: 10, match: 89, reason: 'Crispy crepe texture embedding matches South Indian cluster.' },
-  { id: 9,  name: 'Veg Biryani Special',         restaurant: 'Royal Biryani House',   price: 200, rating: 4.4, category: 'Indian',    img: 'images (5).jpeg',                                     kcal: 460, protein: 12, match: 87, reason: 'Biryani visual cluster match — basmati rice texture features align.' },
-  { id: 10, name: 'Tandoori Roti Basket',        restaurant: 'The Dhaba',             price: 120, rating: 4.2, category: 'Indian',    img: 'images (6).jpeg',                                     kcal: 260, protein: 8,  match: 83, reason: 'Baked flatbread visual features match Indian bread cluster.' },
-  { id: 11, name: 'Chicken Curry Kadai',         restaurant: 'Spice Route',           price: 220, rating: 4.5, category: 'Indian',    img: 'images (7).jpeg',                                     kcal: 440, protein: 36, match: 92, reason: 'Spiced gravy & chicken visual embedding match at dimension 82-95.' },
-  { id: 12, name: 'Creamy Shahi Paneer',         restaurant: 'The Royal Feast',       price: 250, rating: 4.6, category: 'Indian',    img: 'images (8).jpeg',                                     kcal: 410, protein: 20, match: 88, reason: 'Creamy curd & cottage cheese feature maps align with Indian profile.' },
-  { id: 13, name: 'Dal Tadka Combo',             restaurant: 'Desi Kitchen',          price: 180, rating: 4.3, category: 'Indian',    img: 'images (9).jpeg',                                     kcal: 310, protein: 14, match: 85, reason: 'Lentil soup visual embedding matches comfort food cluster.' },
-  { id: 14, name: 'Chicken Dum Biryani',        restaurant: 'Biryani Zone',          price: 280, rating: 4.7, category: 'Indian',    img: 'images (10).jpeg',                                    kcal: 510, protein: 32, match: 94, reason: 'Deep visual similarity to your 5 previous spiced-rice order embeddings.' },
-  { id: 15, name: 'Butter Naan & Dal Makhani',  restaurant: 'The Dhaba',             price: 190, rating: 4.4, category: 'Indian',    img: 'images (11).jpeg',                                    kcal: 380, protein: 14, match: 88, reason: 'Matches creamy-gravy & bread texture vectors in your taste profile.' },
-  { id: 16, name: 'Gulab Jamun Sundae',         restaurant: 'Sweet Tooth Patisserie',price: 120, rating: 4.9, category: 'Desserts', img: 'images.jpeg',                                          kcal: 380, protein: 6,  match: 88, reason: 'Your top dessert — visual feature cosine similarity 0.88 to dessert cluster.' },
-  { id: 17, name: 'Double Cheese Burger',        restaurant: 'Burger House',          price: 180, rating: 4.3, category: 'Fast Food', img: 'istockphoto-1410130688-612x612.jpg',                kcal: 680, protein: 28, match: 75, reason: 'Matches your evening fast-food ordering time-pattern.' },
-  { id: 18, name: 'Loaded Peri Peri Fries',      restaurant: 'The Fry Express',       price: 150, rating: 4.2, category: 'Fast Food', img: 'istockphoto-1453499717-612x612.jpg',                kcal: 430, protein: 8,  match: 70, reason: 'Frequently ordered as a side — meal pattern correlation 0.82.' },
-  { id: 19, name: 'Gourmet Food Feast',         restaurant: 'Grand Bistro',          price: 350, rating: 4.8, category: 'Healthy',   img: 'maxresdefault.jpg',                                   kcal: 520, protein: 38, match: 92, reason: 'Rich multi-course platter visual feature array matches high-protein target.' },
-  { id: 20, name: 'Italian Pizza with Olives',  restaurant: 'Toscano Pizzeria',      price: 380, rating: 4.8, category: 'Italian',   img: 'pizza-with-olives-tomatoes-olives-it_1268410-858.avif', kcal: 560, protein: 20, match: 95, reason: 'Woodfired pizza crust & olive topping embeddings match Italian dims 0-15.' },
+  { id: 1,  name: 'Grilled Steak Platter',       restaurant: 'The Meat House',        price: 450, rating: 4.8, category: 'Meat',            img: 'Meat/0.jpg',            kcal: 540, protein: 42, match: 98, reason: 'High visual similarity to premium grilled meat embeddings.' },
+  { id: 2,  name: 'Fried Chicken Wings',         restaurant: 'Crispy Bites',          price: 280, rating: 4.6, category: 'Meat',            img: 'Meat/10.jpg',           kcal: 430, protein: 30, match: 96, reason: 'Crispy fried drumstick pattern matches your visual preference vector.' },
+  { id: 3,  name: 'Spaghetti Bolognese',         restaurant: 'Italiano',              price: 350, rating: 4.7, category: 'Noodles-Pasta',   img: 'Noodles-Pasta/0.jpg',   kcal: 480, protein: 26, match: 95, reason: 'Rich savory pasta and sauce visual embedding alignment.' },
+  { id: 4,  name: 'Creamy Alfredo Pasta',        restaurant: 'Italiano',              price: 320, rating: 4.5, category: 'Noodles-Pasta',   img: 'Noodles-Pasta/10.jpg',  kcal: 460, protein: 18, match: 93, reason: 'Silky Alfredo pasta texture vectors match Italian preferences.' },
+  { id: 5,  name: 'Classic Cheeseburger',        restaurant: 'Burger Joint',          price: 250, rating: 4.4, category: 'Fried food',      img: 'Fried food/0.jpg',      kcal: 580, protein: 28, match: 91, reason: 'Golden toasted bun and savory patty visual features align.' },
+  { id: 6,  name: 'Crispy French Fries',         restaurant: 'Burger Joint',          price: 120, rating: 4.3, category: 'Fried food',      img: 'Fried food/10.jpg',     kcal: 320, protein: 6,  match: 86, reason: 'Golden-crisp potato visual feature maps align with fast-casual cluster.' },
+  { id: 7,  name: 'Fresh Garden Salad',          restaurant: 'Green Bowl',            price: 180, rating: 4.6, category: 'Vegetable-Fruit', img: 'Vegetable-Fruit/0.jpg', kcal: 180, protein: 8,  match: 94, reason: 'Vibrant greens and crisp produce cosine similarity 0.94.' },
+  { id: 8,  name: 'Tropical Fruit Bowl',         restaurant: 'Green Bowl',            price: 200, rating: 4.8, category: 'Vegetable-Fruit', img: 'Vegetable-Fruit/10.jpg',kcal: 210, protein: 5,  match: 92, reason: 'High density of natural micronutrient and fruit texture features.' },
+  { id: 9,  name: 'Artisan Sourdough Bread',     restaurant: 'The Bakery',            price: 150, rating: 4.7, category: 'Bread',           img: 'Bread/0.jpg',           kcal: 260, protein: 9,  match: 89, reason: 'Rustic fermented crumb and crust pattern aligns with bakery embeddings.' },
+  { id: 10, name: 'Garlic Breadsticks',          restaurant: 'The Bakery',            price: 140, rating: 4.5, category: 'Bread',           img: 'Bread/10.jpg',          kcal: 290, protein: 8,  match: 87, reason: 'Warm herbaceous garlic butter visual map matches your savory profile.' },
+  { id: 11, name: 'Chocolate Fudge Brownie',     restaurant: 'Sweet Treats',          price: 160, rating: 4.9, category: 'Dessert',         img: 'Dessert/0.jpg',         kcal: 380, protein: 6,  match: 94, reason: 'Decadent dark chocolate visual cluster match at dimension 60-75.' },
+  { id: 12, name: 'Vanilla Ice Cream Sundae',    restaurant: 'Sweet Treats',          price: 190, rating: 4.8, category: 'Dessert',         img: 'Dessert/10.jpg',        kcal: 320, protein: 7,  match: 91, reason: 'Creamy vanilla texture and dessert feature cosine similarity 0.91.' },
+  { id: 13, name: 'Steamed Jasmine Rice',        restaurant: 'Asian Wok',             price: 110, rating: 4.2, category: 'Rice',            img: 'Rice/0.jpg',            kcal: 240, protein: 5,  match: 85, reason: 'Pure fragrant steamed rice grain embeddings.' },
+  { id: 14, name: 'Vegetable Fried Rice',        restaurant: 'Asian Wok',             price: 180, rating: 4.4, category: 'Rice',            img: 'Rice/10.jpg',           kcal: 350, protein: 9,  match: 90, reason: 'Wok-tossed vegetables and grain texture match comfort profile.' },
+  { id: 15, name: 'Grilled Salmon Fillet',       restaurant: 'Ocean Catch',           price: 520, rating: 4.9, category: 'Seafood',         img: 'Seafood/0.jpg',         kcal: 420, protein: 38, match: 97, reason: 'Premium omega-3 seafood texture and char line visual alignment.' },
+  { id: 16, name: 'Crispy Fried Prawns',         restaurant: 'Ocean Catch',           price: 430, rating: 4.7, category: 'Seafood',         img: 'Seafood/10.jpg',        kcal: 390, protein: 29, match: 92, reason: 'Golden battered seafood texture matches fried favorites.' },
+  { id: 17, name: 'Cream of Mushroom Soup',      restaurant: 'Soup Kitchen',          price: 150, rating: 4.5, category: 'Soup',            img: 'Soup/0.jpg',            kcal: 210, protein: 7,  match: 88, reason: 'Warm velouté consistency and earth tone visual embedding match.' },
+  { id: 18, name: 'Spicy Tomato Soup',           restaurant: 'Soup Kitchen',          price: 130, rating: 4.3, category: 'Soup',            img: 'Soup/10.jpg',           kcal: 160, protein: 4,  match: 86, reason: 'Rich tomato broth color features match soup preferences.' },
+  { id: 19, name: 'Classic Boiled Eggs',         restaurant: 'Morning Bites',         price: 60,  rating: 4.1, category: 'Egg',             img: 'Egg/0.jpg',             kcal: 140, protein: 13, match: 84, reason: 'High-protein breakfast egg embedding vector alignment.' },
+  { id: 20, name: 'Fresh Strawberry Milkshake',  restaurant: 'Dairy Delights',        price: 150, rating: 4.6, category: 'Dairy product',   img: 'Dairy product/0.jpg',   kcal: 280, protein: 10, match: 89, reason: 'Creamy dairy emulsion and berry visual features align with morning snack.' },
 ];
 
 const CATEGORIES = [
-  { label: 'All',       icon: '🍽️' },
-  { label: 'Indian',    icon: '🍛' },
-  { label: 'Healthy',   icon: '🥗' },
-  { label: 'Italian',   icon: '🍕' },
-  { label: 'Fast Food', icon: '🍔' },
-  { label: 'Desserts',  icon: '🍰' },
+  { label: 'All',             icon: '🍽️' },
+  { label: 'Meat',            icon: '🥩' },
+  { label: 'Noodles-Pasta',   icon: '🍝' },
+  { label: 'Fried food',      icon: '🍟' },
+  { label: 'Vegetable-Fruit', icon: '🥗' },
+  { label: 'Bread',           icon: '🍞' },
+  { label: 'Dessert',         icon: '🍰' },
+  { label: 'Rice',            icon: '🍚' },
+  { label: 'Seafood',         icon: '🦐' },
+  { label: 'Soup',            icon: '🍲' },
+  { label: 'Egg',             icon: '🥚' },
+  { label: 'Dairy product',   icon: '🥛' },
 ];
 
 const RECENT_PICKS = [
-  { name: 'Paneer Tikka Skewers',  when: 'Yesterday • Dinner',  img: 'dish_4.png'   },
-  { name: 'Chicken Dum Biryani',   when: 'Tuesday • Lunch',     img: 'dish_10.jpeg' },
-  { name: 'Quinoa Avocado Salad',  when: 'Monday • Breakfast',  img: 'dish_12.jpeg' },
+  { name: 'Fresh Garden Salad',    when: 'Yesterday • Dinner', img: 'Vegetable-Fruit/0.jpg' },
+  { name: 'Spaghetti Bolognese',   when: 'Tuesday • Lunch',    img: 'Noodles-Pasta/0.jpg' },
+  { name: 'Grilled Steak Platter', when: 'Monday • Dinner',    img: 'Meat/0.jpg' },
 ];
 
 const FEATURES = [
@@ -100,7 +106,7 @@ import MealOrderModal, { DishDetails } from '@/components/meal-order-modal';
 
 export default function HomeScreen() {
   const router  = useRouter();
-  const { tasteRecommendations, userVectorSummary, resetProfile } = useAppStore();
+  const { tasteRecommendations, userVectorSummary, resetProfile, userSurveyPreferences, selectedCity } = useAppStore();
 
   const [backendOnline, setBackendOnline] = useState(false);
   const [searchQuery,   setSearchQuery]   = useState('');
@@ -112,6 +118,18 @@ export default function HomeScreen() {
     api.get('/health')
       .then(r => { if (r.data?.status === 'healthy') setBackendOnline(true); })
       .catch(() => {});
+      
+    // Auto-determine meal period
+    const hour = new Date().getHours();
+    let slot: 'Morning (Breakfast)' | 'Afternoon (Lunch)' | 'Evening (Snacks)' | 'Night (Dinner)' = 'Afternoon (Lunch)';
+    if (hour >= 5 && hour < 11) slot = 'Morning (Breakfast)';
+    else if (hour >= 11 && hour < 16) slot = 'Afternoon (Lunch)';
+    else if (hour >= 16 && hour < 19) slot = 'Evening (Snacks)';
+    else slot = 'Night (Dinner)';
+    
+    if (useAppStore.getState().userSurveyPreferences.activeTimeSlot !== slot) {
+      useAppStore.getState().updateSurveyPreferences({ activeTimeSlot: slot });
+    }
   }, []);
 
   const hasProfile = tasteRecommendations.length > 0;
@@ -142,11 +160,12 @@ export default function HomeScreen() {
 
   // ── LANDING PAGE ─────────────────────────────────────────────
   if (!hasProfile) {
-    return <LandingPage onStart={() => router.push('/profiler')} />;
+    return <LandingPage />;
   }
 
   // ── DASHBOARD ────────────────────────────────────────────────
   const heroItem = allRecs[0];
+  const activeMealSlot = userSurveyPreferences.activeTimeSlot;
 
   return (
     <View style={styles.root}>
@@ -158,7 +177,7 @@ export default function HomeScreen() {
           <View style={styles.topRow}>
             <View>
               <Text style={styles.greeting}>Hello, <Text style={styles.greetingAccent}>Alex!</Text></Text>
-              <Text style={styles.greetingSub}>Here's what's cooking for you today.</Text>
+              <Text style={styles.greetingSub}>📍 {selectedCity} • {activeMealSlot}</Text>
             </View>
             <View style={styles.topRight}>
               <View style={styles.searchBar}>
@@ -172,6 +191,16 @@ export default function HomeScreen() {
                 />
               </View>
               <View style={[styles.statusDot, { backgroundColor: backendOnline ? '#2ECC71' : '#E74C3C' }]} />
+              <Pressable
+                style={styles.profileAvatarBtn}
+                onPress={() => router.push('/profile')}
+                accessibilityLabel="Go to Profile"
+              >
+                <Image
+                  source={{ uri: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80' }}
+                  style={styles.profileAvatarImg}
+                />
+              </Pressable>
             </View>
           </View>
 
@@ -208,6 +237,27 @@ export default function HomeScreen() {
                     <Text style={styles.heroBtnText}>Order Now</Text>
                   </Pressable>
                 </View>
+
+                {/* FoodGAN Studio Quick Access Banner */}
+                <Pressable
+                  style={styles.ganBanner}
+                  onPress={() => router.push('/gan-studio' as any)}
+                >
+                  <View style={styles.ganBannerLeft}>
+                    <View style={styles.ganBadge}>
+                      <Ionicons name="sparkles" size={12} color="#FFF" />
+                      <Text style={styles.ganBadgeText}>MODEL 4: AC-GAN</Text>
+                    </View>
+                    <Text style={styles.ganBannerTitle}>Neural Dish Studio</Text>
+                    <Text style={styles.ganBannerSub}>
+                      Synthesize custom visual dishes conditioned on Food-11 categories
+                    </Text>
+                  </View>
+                  <View style={styles.ganBannerBtn}>
+                    <Text style={styles.ganBannerBtnText}>Launch Studio</Text>
+                    <Ionicons name="arrow-forward" size={14} color="#FFF" />
+                  </View>
+                </Pressable>
 
                 {/* Category filter pills */}
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -373,7 +423,41 @@ export default function HomeScreen() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Landing Page
 // ─────────────────────────────────────────────────────────────────────────────
-function LandingPage({ onStart }: { onStart: () => void }) {
+import LoginAuth from '@/components/login-auth';
+
+function LandingPage() {
+  const router = useRouter();
+  const { token, setTasteRecommendations, setUserVectorSummary } = useAppStore();
+  const [showLogin, setShowLogin] = useState(false);
+
+  const handleStart = () => {
+    if (token) {
+      router.push('/profiler');
+    } else {
+      setShowLogin(true);
+    }
+  };
+
+  const handleLoginSuccess = async () => {
+    setShowLogin(false);
+    // Fetch profile and check if they already have recommendations
+    try {
+      // Actually, we can fetch their previous profile. The backend `/auth/me` returns the user,
+      // but `/recommendations/taste-profile` with empty lists fetches their existing one based on DB.
+      // Let's call /recommendations/taste-profile with empty likes.
+      const res = await api.post('/recommendations/taste-profile', { liked_dish_ids: [] });
+      if (res.data && res.data.recommendations && res.data.recommendations.length > 0) {
+        setTasteRecommendations(res.data.recommendations);
+        setUserVectorSummary(res.data.user_vector_summary);
+      } else {
+        router.push('/profiler');
+      }
+    } catch (e) {
+      console.warn("Could not fetch taste profile, pushing to profiler", e);
+      router.push('/profiler');
+    }
+  };
+
   // Pick 3 hero dishes for the preview grid
   const heroDishes = [
     ALL_DISHES.find(d => d.id === 14)!,
@@ -399,12 +483,14 @@ function LandingPage({ onStart }: { onStart: () => void }) {
             profile to curate premium, delicious, and goal-aligned meal recommendations instantly.
           </Text>
           <View style={lp.heroBtns}>
-            <Pressable style={lp.btnPrimary} onPress={onStart}>
+            <Pressable style={lp.btnPrimary} onPress={handleStart}>
               <Text style={lp.btnPrimaryText}>Get Started  →</Text>
             </Pressable>
-            <Pressable style={lp.btnOutline}>
-              <Text style={lp.btnOutlineText}>▶  See How It Works</Text>
-            </Pressable>
+            {!token && (
+              <Pressable style={lp.btnOutline} onPress={() => setShowLogin(true)}>
+                <Text style={lp.btnOutlineText}>Log In</Text>
+              </Pressable>
+            )}
           </View>
         </View>
 
@@ -517,7 +603,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
       <View style={lp.ctaBanner}>
         <Text style={lp.ctaBannerTitle}>Ready to taste the future?</Text>
         <Text style={lp.ctaBannerSub}>Take the visual taste test — 2 minutes to train your personal CNN model.</Text>
-        <Pressable style={lp.ctaBannerBtn} onPress={onStart}>
+        <Pressable style={lp.ctaBannerBtn} onPress={handleStart}>
           <Text style={lp.ctaBannerBtnText}>Start Visual Appetite Test →</Text>
         </Pressable>
       </View>
@@ -536,6 +622,8 @@ function LandingPage({ onStart }: { onStart: () => void }) {
           </View>
         )}
       </View>
+      
+      {showLogin && <LoginAuth onSuccess={handleLoginSuccess} onCancel={() => setShowLogin(false)} />}
     </ScrollView>
   );
 }
@@ -555,6 +643,18 @@ const styles = StyleSheet.create({
   greetingAccent:{ color: Brand.orange },
   greetingSub:   { fontSize: 12, color: TextColors.muted, marginTop: 2 },
   topRight:      { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  profileAvatarBtn: {
+    marginLeft: 6,
+    borderRadius: Radius.full,
+    borderWidth: 2,
+    borderColor: Brand.primary,
+    overflow: 'hidden',
+  },
+  profileAvatarImg: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+  },
   searchBar: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: Surface.inputBg, borderRadius: Radius.full,
@@ -725,6 +825,72 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.three, alignItems: 'center',
   },
   upgradeText:   { color: '#FFF', fontWeight: '800', fontSize: 15 },
+
+  // FoodGAN Studio Banner
+  ganBanner: {
+    backgroundColor: '#FFF',
+    borderWidth: 1.5,
+    borderColor: '#FFD3C4',
+    borderRadius: Radius.lg,
+    padding: 16,
+    marginTop: 16,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 12,
+    shadowColor: Brand.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  ganBannerLeft: {
+    flex: 1,
+    minWidth: 220,
+  },
+  ganBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Brand.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: Radius.full,
+    gap: 4,
+    alignSelf: 'flex-start',
+    marginBottom: 4,
+  },
+  ganBadgeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  ganBannerTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: TextColors.heading,
+  },
+  ganBannerSub: {
+    fontSize: 12,
+    color: TextColors.muted,
+    marginTop: 2,
+  },
+  ganBannerBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Brand.primary,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: Radius.md,
+  },
+  ganBannerBtnText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

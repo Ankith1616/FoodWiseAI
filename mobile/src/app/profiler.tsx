@@ -22,7 +22,11 @@ import { Brand, Surface, TextColors, Radius, Spacing, Status } from '@/constants
 import { useAppStore } from '@/store/useAppStore';
 import api, { rawBaseUrl } from '@/services/api';
 
-const IMG = (f: string) => `${rawBaseUrl}/static/images/dishes/${f}`;
+const IMG = (f: string) => {
+  if (!f) return `${rawBaseUrl}/dataset/Egg/0.jpg`;
+  if (f.startsWith('/dataset/') || f.startsWith('/static/')) return `${rawBaseUrl}${f}`;
+  return `${rawBaseUrl}/dataset/${f}`;
+};
 
 interface ProfilerCard {
   id:          number;
@@ -101,8 +105,7 @@ export default function ProfilerScreen() {
 
   const submitProfile = async (finalIds: number[]) => {
     setIsSubmitting(true);
-    // Save survey responses to Zustand
-    updateSurveyPreferences({
+    const survey_data = {
       favoriteCuisines: favCuisines,
       favoriteFoods: favFoods,
       allergies,
@@ -113,10 +116,21 @@ export default function ProfilerScreen() {
       spicePreference: spice,
       sweetPreference: sweet,
       budget,
-    });
+    };
+    
+    // Save survey responses to Zustand
+    updateSurveyPreferences(survey_data);
 
     try {
-      const res = await api.post('/recommendations/taste-profile', { liked_dish_ids: finalIds });
+      // 1. Post to auth/survey to generate 64-D latent vector and cache in PostgreSQL
+      await api.post('/auth/survey', survey_data);
+      
+      // 2. Post to taste-profile with liked IDs (and survey_data fallback)
+      const res = await api.post('/recommendations/taste-profile', { 
+        liked_dish_ids: finalIds,
+        survey_data 
+      });
+      
       setLikedDishIds(finalIds);
       setTasteRecommendations(res.data.recommendations);
       setUserVectorSummary(res.data.user_vector_summary);
@@ -460,16 +474,20 @@ export default function ProfilerScreen() {
   );
 }
 
-// ── Fallback cards with real images ──────────────────────────
+
+
+// ── Fallback cards with dataset images ──────────────────────────
 const FALLBACK_CARDS: ProfilerCard[] = [
-  { id: 1,  name: 'Paneer Butter Masala',      restaurant: 'Punjabi Rasoi',         price: 240, rating: 4.6, category: 'Indian',    image_emoji: '🍲', img: 'dish_1.jpg'   },
-  { id: 4,  name: 'Quinoa Avocado Salad',       restaurant: 'The Green Bowl',         price: 290, rating: 4.8, category: 'Healthy',   image_emoji: '🥗', img: 'dish_12.jpeg' },
-  { id: 7,  name: 'Margherita Woodfired Pizza', restaurant: 'Toscano Pizzeria',       price: 380, rating: 4.5, category: 'Italian',   image_emoji: '🍕', img: 'dish_15.jpeg' },
-  { id: 12, name: 'Triple Chocolate Brownie',   restaurant: 'Sweet Tooth Patisserie', price: 120, rating: 4.9, category: 'Desserts',  image_emoji: '🍰', img: 'dish_2.webp'  },
-  { id: 10, name: 'Double Cheese Burger',        restaurant: 'Burger House',           price: 180, rating: 4.3, category: 'Fast Food', image_emoji: '🍔', img: 'dish_18.jpg'  },
-  { id: 14, name: 'Paneer Tikka Skewers',        restaurant: 'Grill Station',          price: 260, rating: 4.6, category: 'Indian',    image_emoji: '🔥', img: 'dish_4.png'   },
-  { id: 15, name: 'Chicken Curry Kadai',         restaurant: 'Spice Route',            price: 220, rating: 4.5, category: 'Indian',    image_emoji: '🍗', img: 'dish_7.jpeg'  },
-  { id: 2,  name: 'Chicken Dum Biryani',         restaurant: 'Biryani Zone',           price: 280, rating: 4.7, category: 'Indian',    image_emoji: '🍚', img: 'dish_10.jpeg' },
+  { id: 1,  name: 'Grilled Steak Platter',      restaurant: 'The Meat House',        price: 450, rating: 4.8, category: 'Meat',            image_emoji: '🥩', image_url: '/dataset/Meat/0.jpg',           img: 'Meat/0.jpg' },
+  { id: 3,  name: 'Spaghetti Bolognese',        restaurant: 'Italiano',              price: 350, rating: 4.7, category: 'Noodles-Pasta',   image_emoji: '🍝', image_url: '/dataset/Noodles-Pasta/0.jpg',  img: 'Noodles-Pasta/0.jpg' },
+  { id: 5,  name: 'Classic Cheeseburger',        restaurant: 'Burger Joint',          price: 250, rating: 4.4, category: 'Fried food',      image_emoji: '🍔', image_url: '/dataset/Fried food/0.jpg',     img: 'Fried food/0.jpg' },
+  { id: 7,  name: 'Fresh Garden Salad',          restaurant: 'Green Bowl',            price: 180, rating: 4.6, category: 'Vegetable-Fruit', image_emoji: '🥗', image_url: '/dataset/Vegetable-Fruit/0.jpg',img: 'Vegetable-Fruit/0.jpg' },
+  { id: 9,  name: 'Artisan Sourdough Bread',     restaurant: 'The Bakery',            price: 150, rating: 4.7, category: 'Bread',           image_emoji: '🍞', image_url: '/dataset/Bread/0.jpg',          img: 'Bread/0.jpg' },
+  { id: 11, name: 'Chocolate Fudge Brownie',     restaurant: 'Sweet Treats',          price: 160, rating: 4.9, category: 'Dessert',         image_emoji: '🍩', image_url: '/dataset/Dessert/0.jpg',        img: 'Dessert/0.jpg' },
+  { id: 13, name: 'Steamed Jasmine Rice',        restaurant: 'Asian Wok',             price: 110, rating: 4.2, category: 'Rice',            image_emoji: '🍚', image_url: '/dataset/Rice/0.jpg',           img: 'Rice/0.jpg' },
+  { id: 15, name: 'Grilled Salmon Fillet',       restaurant: 'Ocean Catch',           price: 520, rating: 4.9, category: 'Seafood',         image_emoji: '🍣', image_url: '/dataset/Seafood/0.jpg',        img: 'Seafood/0.jpg' },
+  { id: 17, name: 'Cream of Mushroom Soup',      restaurant: 'Soup Kitchen',          price: 150, rating: 4.5, category: 'Soup',            image_emoji: '🍲', image_url: '/dataset/Soup/0.jpg',           img: 'Soup/0.jpg' },
+  { id: 20, name: 'Fresh Strawberry Milkshake',  restaurant: 'Dairy Delights',        price: 150, rating: 4.6, category: 'Dairy product',   image_emoji: '🥤', image_url: '/dataset/Dairy product/0.jpg',  img: 'Dairy product/0.jpg' },
 ];
 
 

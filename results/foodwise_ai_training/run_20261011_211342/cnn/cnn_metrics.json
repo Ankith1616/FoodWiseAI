@@ -1,0 +1,255 @@
+{
+    "model_name": "FoodWiseCNNEncoder",
+    "dataset": "Food-11 (70/15/15 splits)",
+    "train_samples": 7862,
+    "val_samples": 2290,
+    "test_samples": 2291,
+    "num_classes": 11,
+    "best_epoch": 14,
+    "total_epochs": 15,
+    "cumulative_training_time_sec": 819.71,
+    "test_inference_time_sec": 11.21,
+    "test_accuracy": 0.4976,
+    "test_top5_accuracy": 0.9136,
+    "test_macro_precision": 0.4893,
+    "test_macro_recall": 0.4639,
+    "test_macro_f1": 0.4695,
+    "test_weighted_precision": 0.5037,
+    "test_weighted_recall": 0.4976,
+    "test_weighted_f1": 0.4938,
+    "per_class_metrics": [
+        {
+            "class_id": 0,
+            "class_name": "Bread",
+            "precision": 0.2964,
+            "recall": 0.3402,
+            "f1_score": 0.3168,
+            "support": 244
+        },
+        {
+            "class_id": 1,
+            "class_name": "Dairy product",
+            "precision": 0.4459,
+            "recall": 0.3402,
+            "f1_score": 0.386,
+            "support": 97
+        },
+        {
+            "class_id": 2,
+            "class_name": "Dessert",
+            "precision": 0.4224,
+            "recall": 0.4298,
+            "f1_score": 0.4261,
+            "support": 342
+        },
+        {
+            "class_id": 3,
+            "class_name": "Egg",
+            "precision": 0.4699,
+            "recall": 0.527,
+            "f1_score": 0.4968,
+            "support": 222
+        },
+        {
+            "class_id": 4,
+            "class_name": "Fried food",
+            "precision": 0.4203,
+            "recall": 0.4372,
+            "f1_score": 0.4286,
+            "support": 199
+        },
+        {
+            "class_id": 5,
+            "class_name": "Meat",
+            "precision": 0.5355,
+            "recall": 0.5993,
+            "f1_score": 0.5656,
+            "support": 302
+        },
+        {
+            "class_id": 6,
+            "class_name": "Noodles-Pasta",
+            "precision": 0.5269,
+            "recall": 0.4667,
+            "f1_score": 0.4949,
+            "support": 105
+        },
+        {
+            "class_id": 7,
+            "class_name": "Rice",
+            "precision": 0.2687,
+            "recall": 0.2609,
+            "f1_score": 0.2647,
+            "support": 69
+        },
+        {
+            "class_id": 8,
+            "class_name": "Seafood",
+            "precision": 0.6105,
+            "recall": 0.2829,
+            "f1_score": 0.3867,
+            "support": 205
+        },
+        {
+            "class_id": 9,
+            "class_name": "Soup",
+            "precision": 0.6633,
+            "recall": 0.7536,
+            "f1_score": 0.7056,
+            "support": 345
+        },
+        {
+            "class_id": 10,
+            "class_name": "Vegetable-Fruit",
+            "precision": 0.723,
+            "recall": 0.6646,
+            "f1_score": 0.6926,
+            "support": 161
+        }
+    ],
+    "confusion_matrix": [
+        [
+            83,
+            5,
+            27,
+            26,
+            35,
+            26,
+            9,
+            9,
+            3,
+            16,
+            5
+        ],
+        [
+            12,
+            33,
+            20,
+            13,
+            4,
+            4,
+            0,
+            1,
+            1,
+            7,
+            2
+        ],
+        [
+            34,
+            16,
+            147,
+            22,
+            18,
+            48,
+            2,
+            5,
+            14,
+            28,
+            8
+        ],
+        [
+            33,
+            4,
+            23,
+            117,
+            14,
+            9,
+            3,
+            3,
+            1,
+            12,
+            3
+        ],
+        [
+            43,
+            0,
+            13,
+            16,
+            87,
+            17,
+            2,
+            2,
+            2,
+            15,
+            2
+        ],
+        [
+            14,
+            4,
+            41,
+            13,
+            17,
+            181,
+            2,
+            2,
+            7,
+            15,
+            6
+        ],
+        [
+            3,
+            0,
+            1,
+            4,
+            2,
+            8,
+            49,
+            19,
+            0,
+            17,
+            2
+        ],
+        [
+            12,
+            1,
+            3,
+            3,
+            4,
+            4,
+            12,
+            18,
+            0,
+            11,
+            1
+        ],
+        [
+            23,
+            3,
+            40,
+            17,
+            8,
+            28,
+            1,
+            5,
+            58,
+            10,
+            12
+        ],
+        [
+            20,
+            7,
+            20,
+            11,
+            10,
+            7,
+            9,
+            1,
+            0,
+            260,
+            0
+        ],
+        [
+            3,
+            1,
+            13,
+            7,
+            8,
+            6,
+            4,
+            2,
+            9,
+            1,
+            107
+        ]
+    ]
+}

@@ -19,6 +19,21 @@ def generate_uuid() -> str:
     return str(uuid.uuid4())
 
 
+class UserAuthDB(Base):
+    """PostgreSQL Table for User Authentication."""
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    email = Column(String, unique=True, nullable=False, index=True)
+    full_name = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    preferences = relationship("UserPreferenceDB", back_populates="user", uselist=False)
+
+
+
 class ImageMetadataDB(Base):
     """Image Metadata Schema connected by image_id."""
     __tablename__ = "image_metadata"
@@ -45,6 +60,7 @@ class FoodCatalogItemDB(Base):
     cuisine = Column(String, nullable=False)         # Indian, Fast Food, Italian, Healthy, Dessert
     category = Column(String, nullable=False)        # Appetizer, Main Course, Fast Food, Dessert, Salad
     is_veg = Column(Boolean, nullable=False, default=False)
+    dietary_type = Column(String, nullable=False, default="Unknown") # Vegetarian, Non-vegetarian, Vegan, Unknown
     price = Column(Float, nullable=False)
     calories = Column(Integer, nullable=False)
     protein_g = Column(Float, nullable=False)
@@ -67,7 +83,7 @@ class UserPreferenceDB(Base):
     """Anonymized User Preferences Schema connected by anonymous user_id."""
     __tablename__ = "user_preferences"
 
-    user_id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), primary_key=True, default=generate_uuid)
     dietary_protocols = Column(String, default="[]")  # JSON string e.g. ["Keto", "Vegan"]
     max_calories = Column(Integer, default=650)
     spice_tolerance = Column(Integer, default=2)       # 1=Mild, 2=Medium, 3=Spicy
@@ -75,10 +91,12 @@ class UserPreferenceDB(Base):
     carbs_ratio = Column(Float, default=0.40)
     fats_ratio = Column(Float, default=0.25)
     favorite_categories = Column(String, default="[]") # JSON string
+    latent_vector = Column(Text, nullable=True)        # 64-D cached latent vector (JSON array)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
     interactions = relationship("UserFoodInteractionDB", back_populates="user_preference")
+    user = relationship("UserAuthDB", back_populates="preferences")
 
 
 class UserFoodInteractionDB(Base):

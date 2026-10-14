@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 import {
   Brand,
@@ -33,7 +34,7 @@ import MealOrderModal, { DishDetails } from '@/components/meal-order-modal';
 
 const isWeb = Platform.OS === 'web';
 const IMG = (f: string) => {
-  if (!f) return `${rawBaseUrl}/dataset/images.jpeg`;
+  if (!f) return `${rawBaseUrl}/dataset/Egg/0.jpg`;
   if (f.startsWith('/dataset/') || f.startsWith('/static/')) return `${rawBaseUrl}${f}`;
   return `${rawBaseUrl}/dataset/${f}`;
 };
@@ -52,29 +53,29 @@ type FoodItem = {
 };
 
 const ALL_FOODS: FoodItem[] = [
-  { id: 1,  name: 'Chicken Lollipop Drums',    restaurant: 'Spice Station',          cuisine: 'Indian',    price: 260, rating: 4.8, kcal: 450, img: 'best_chicken_lollipop_drums_of_chicken-500x500.jpg', isVeg: false, match: 98 },
-  { id: 2,  name: 'Spicy Chicken Lollipop',     restaurant: 'Asian Wok & Grill',      cuisine: 'Fast Food', price: 270, rating: 4.7, kcal: 430, img: 'chicken-lollipop-1-500x500.webp',                   isVeg: false, match: 96 },
-  { id: 3,  name: 'Crispy Chicken Lollipops',   restaurant: 'The Sizzler House',      cuisine: 'Fast Food', price: 250, rating: 4.6, kcal: 410, img: 'chicken-lollipop-480x270.jpg',                     isVeg: false, match: 94 },
-  { id: 4,  name: 'Paneer Tikka Skewers',       restaurant: 'Grill Station',          cuisine: 'Indian',    price: 240, rating: 4.6, kcal: 390, img: 'image-358.png',                                       isVeg: true,  match: 93 },
-  { id: 5,  name: 'Gourmet Chicken Bowl',       restaurant: 'Healthy Bytes',          cuisine: 'Healthy',   price: 290, rating: 4.5, kcal: 380, img: 'images (1).jpeg',                                     isVeg: false, match: 91 },
-  { id: 6,  name: 'Chef Special Curry',         restaurant: 'Punjabi Rasoi',          cuisine: 'Indian',    price: 230, rating: 4.4, kcal: 420, img: 'images (2).jpeg',                                     isVeg: false, match: 90 },
-  { id: 7,  name: 'Crispy Samosa Platter',      restaurant: 'Street Bites',           cuisine: 'Fast Food', price: 140, rating: 4.3, kcal: 320, img: 'images (3).jpeg',                                     isVeg: true,  match: 86 },
-  { id: 8,  name: 'Masala Dosa Supreme',        restaurant: 'South Express',          cuisine: 'Indian',    price: 160, rating: 4.7, kcal: 340, img: 'images (4).jpeg',                                     isVeg: true,  match: 89 },
-  { id: 9,  name: 'Veg Biryani Special',        restaurant: 'Royal Biryani House',    cuisine: 'Indian',    price: 200, rating: 4.4, kcal: 460, img: 'images (5).jpeg',                                     isVeg: true,  match: 87 },
-  { id: 10, name: 'Tandoori Roti Basket',       restaurant: 'The Dhaba',              cuisine: 'Indian',    price: 120, rating: 4.2, kcal: 260, img: 'images (6).jpeg',                                     isVeg: true,  match: 83 },
-  { id: 11, name: 'Chicken Curry Kadai',        restaurant: 'Spice Route',            cuisine: 'Indian',    price: 220, rating: 4.5, kcal: 440, img: 'images (7).jpeg',                                     isVeg: false, match: 92 },
-  { id: 12, name: 'Creamy Shahi Paneer',        restaurant: 'The Royal Feast',        cuisine: 'Indian',    price: 250, rating: 4.6, kcal: 410, img: 'images (8).jpeg',                                     isVeg: true,  match: 88 },
-  { id: 13, name: 'Dal Tadka Combo',            restaurant: 'Desi Kitchen',           cuisine: 'Indian',    price: 180, rating: 4.3, kcal: 310, img: 'images (9).jpeg',                                     isVeg: true,  match: 85 },
-  { id: 14, name: 'Chicken Dum Biryani',        restaurant: 'Biryani Zone',           cuisine: 'Indian',    price: 280, rating: 4.7, kcal: 510, img: 'images (10).jpeg',                                    isVeg: false, match: 94 },
-  { id: 15, name: 'Butter Naan & Dal Makhani', restaurant: 'The Dhaba',              cuisine: 'Indian',    price: 190, rating: 4.4, kcal: 380, img: 'images (11).jpeg',                                    isVeg: true,  match: 88 },
-  { id: 16, name: 'Gulab Jamun Sundae',        restaurant: 'Sweet Tooth Patisserie', cuisine: 'Desserts',  price: 120, rating: 4.9, kcal: 380, img: 'images.jpeg',                                          isVeg: true,  match: 88 },
-  { id: 17, name: 'Double Cheese Burger',       restaurant: 'Burger House',           cuisine: 'Fast Food', price: 180, rating: 4.3, kcal: 680, img: 'istockphoto-1410130688-612x612.jpg',                isVeg: false, match: 75 },
-  { id: 18, name: 'Loaded Peri Peri Fries',     restaurant: 'The Fry Express',        cuisine: 'Fast Food', price: 150, rating: 4.2, kcal: 430, img: 'istockphoto-1453499717-612x612.jpg',                isVeg: true,  match: 70 },
-  { id: 19, name: 'Gourmet Food Feast',        restaurant: 'Grand Bistro',           cuisine: 'Healthy',   price: 350, rating: 4.8, kcal: 520, img: 'maxresdefault.jpg',                                   isVeg: false, match: 92 },
-  { id: 20, name: 'Italian Pizza with Olives', restaurant: 'Toscano Pizzeria',       cuisine: 'Italian',   price: 380, rating: 4.8, kcal: 560, img: 'pizza-with-olives-tomatoes-olives-it_1268410-858.avif', isVeg: true, match: 95 },
+  { id: 1,  name: 'Grilled Steak Platter',      restaurant: 'The Meat House',         cuisine: 'Meat',            price: 450, rating: 4.8, kcal: 540, img: 'Meat/0.jpg',            isVeg: false, match: 98 },
+  { id: 2,  name: 'Fried Chicken Wings',        restaurant: 'Crispy Bites',           cuisine: 'Meat',            price: 280, rating: 4.6, kcal: 430, img: 'Meat/10.jpg',           isVeg: false, match: 96 },
+  { id: 3,  name: 'Spaghetti Bolognese',        restaurant: 'Italiano',               cuisine: 'Noodles-Pasta',   price: 350, rating: 4.7, kcal: 480, img: 'Noodles-Pasta/0.jpg',   isVeg: false, match: 95 },
+  { id: 4,  name: 'Creamy Alfredo Pasta',       restaurant: 'Italiano',               cuisine: 'Noodles-Pasta',   price: 320, rating: 4.5, kcal: 460, img: 'Noodles-Pasta/10.jpg',  isVeg: true,  match: 93 },
+  { id: 5,  name: 'Classic Cheeseburger',        restaurant: 'Burger Joint',           cuisine: 'Fried food',      price: 250, rating: 4.4, kcal: 580, img: 'Fried food/0.jpg',      isVeg: false, match: 91 },
+  { id: 6,  name: 'Crispy French Fries',         restaurant: 'Burger Joint',           cuisine: 'Fried food',      price: 120, rating: 4.3, kcal: 320, img: 'Fried food/10.jpg',     isVeg: true,  match: 86 },
+  { id: 7,  name: 'Fresh Garden Salad',         restaurant: 'Green Bowl',             cuisine: 'Vegetable-Fruit', price: 180, rating: 4.6, kcal: 180, img: 'Vegetable-Fruit/0.jpg', isVeg: true,  match: 94 },
+  { id: 8,  name: 'Tropical Fruit Bowl',        restaurant: 'Green Bowl',             cuisine: 'Vegetable-Fruit', price: 200, rating: 4.8, kcal: 210, img: 'Vegetable-Fruit/10.jpg',isVeg: true,  match: 92 },
+  { id: 9,  name: 'Artisan Sourdough Bread',    restaurant: 'The Bakery',             cuisine: 'Bread',           price: 150, rating: 4.7, kcal: 260, img: 'Bread/0.jpg',           isVeg: true,  match: 89 },
+  { id: 10, name: 'Garlic Breadsticks',         restaurant: 'The Bakery',             cuisine: 'Bread',           price: 140, rating: 4.5, kcal: 290, img: 'Bread/10.jpg',          isVeg: true,  match: 87 },
+  { id: 11, name: 'Chocolate Fudge Brownie',    restaurant: 'Sweet Treats',           cuisine: 'Dessert',         price: 160, rating: 4.9, kcal: 380, img: 'Dessert/0.jpg',         isVeg: true,  match: 94 },
+  { id: 12, name: 'Vanilla Ice Cream Sundae',   restaurant: 'Sweet Treats',           cuisine: 'Dessert',         price: 190, rating: 4.8, kcal: 320, img: 'Dessert/10.jpg',        isVeg: true,  match: 91 },
+  { id: 13, name: 'Steamed Jasmine Rice',       restaurant: 'Asian Wok',              cuisine: 'Rice',            price: 110, rating: 4.2, kcal: 240, img: 'Rice/0.jpg',            isVeg: true,  match: 85 },
+  { id: 14, name: 'Vegetable Fried Rice',        restaurant: 'Asian Wok',             cuisine: 'Rice',            price: 180, rating: 4.4, kcal: 350, img: 'Rice/10.jpg',           isVeg: true,  match: 90 },
+  { id: 15, name: 'Grilled Salmon Fillet',      restaurant: 'Ocean Catch',            cuisine: 'Seafood',         price: 520, rating: 4.9, kcal: 420, img: 'Seafood/0.jpg',         isVeg: false, match: 97 },
+  { id: 16, name: 'Crispy Fried Prawns',        restaurant: 'Ocean Catch',            cuisine: 'Seafood',         price: 430, rating: 4.7, kcal: 390, img: 'Seafood/10.jpg',        isVeg: false, match: 92 },
+  { id: 17, name: 'Cream of Mushroom Soup',     restaurant: 'Soup Kitchen',           cuisine: 'Soup',            price: 150, rating: 4.5, kcal: 210, img: 'Soup/0.jpg',            isVeg: true,  match: 88 },
+  { id: 18, name: 'Spicy Tomato Soup',          restaurant: 'Soup Kitchen',           cuisine: 'Soup',            price: 130, rating: 4.3, kcal: 160, img: 'Soup/10.jpg',           isVeg: true,  match: 86 },
+  { id: 19, name: 'Classic Boiled Eggs',        restaurant: 'Morning Bites',          cuisine: 'Egg',             price: 60,  rating: 4.1, kcal: 140, img: 'Egg/0.jpg',             isVeg: false, match: 84 },
+  { id: 20, name: 'Fresh Strawberry Milkshake', restaurant: 'Dairy Delights',         cuisine: 'Dairy product',   price: 150, rating: 4.6, kcal: 280, img: 'Dairy product/0.jpg',   isVeg: true,  match: 89 },
 ];
 
-const CUISINES = ['All', 'Indian', 'Italian', 'Fast Food', 'Healthy', 'Desserts'];
+const CUISINES = ['All', 'Meat', 'Noodles-Pasta', 'Fried food', 'Vegetable-Fruit', 'Bread', 'Dessert', 'Rice', 'Seafood', 'Soup', 'Egg', 'Dairy product'];
 const SORT_OPTIONS = [
   { label: 'Best Match',  value: 'match'  },
   { label: 'Price: Low',  value: 'price_asc' },
@@ -84,6 +85,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function FoodScreen() {
+  const router = useRouter();
   const { dietaryMode, setDietaryMode } = useAppStore();
 
   const [search,       setSearch]       = useState('');
@@ -205,6 +207,18 @@ export default function FoodScreen() {
                 >
                   <Ionicons name="options-outline" size={16} color={showFilters ? '#FFF' : TextColors.body} />
                   <Text style={[styles.filterToggleText, showFilters && { color: '#FFF' }]}>Filters</Text>
+                </Pressable>
+
+                {/* Profile avatar button */}
+                <Pressable
+                  style={styles.profileAvatarBtn}
+                  onPress={() => router.push('/profile')}
+                  accessibilityLabel="Go to Profile"
+                >
+                  <Image
+                    source={{ uri: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80' }}
+                    style={styles.profileAvatarImg}
+                  />
                 </Pressable>
               </View>
             </View>
@@ -800,5 +814,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: TextColors.muted,
     textAlign: 'center',
+  },
+  profileAvatarBtn: {
+    marginLeft: 6,
+    borderRadius: Radius.full,
+    borderWidth: 2,
+    borderColor: Brand.primary,
+    overflow: 'hidden',
+  },
+  profileAvatarImg: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
   },
 });

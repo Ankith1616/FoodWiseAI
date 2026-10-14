@@ -1,0 +1,15 @@
+{
+    "timestamp": "20261011_232738",
+    "run_directory": "C:\\Users\\V\\Desktop\\AMRITA\\SEM-7\\Neural Networks and Deep Learning\\FoodWiseAi\\results\\foodwise_ai_training\\run_20261011_232738_extended_v2",
+    "suffix": "_v2",
+    "device": "cpu",
+    "python_version": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "torch_version": "2.6.0+cpu",
+    "random_seed": 42,
+    "batch_size": 128,
+    "epochs_cnn": 30,
+    "epochs_ae": 25,
+    "epochs_ncf": 25,
+    "lr": 0.001,
+    "data_dir": "C:\\Users\\V\\Desktop\\AMRITA\\SEM-7\\Neural Networks and Deep Learning\\FoodWiseAi\\ai\\data"
+}

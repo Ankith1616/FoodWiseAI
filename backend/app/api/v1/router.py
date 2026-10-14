@@ -9,6 +9,7 @@ from app.api.v1.recommendations import router as recommendations_router
 from app.api.v1.dataset import router as dataset_router
 from app.api.v1.dataset_management import router as dataset_mgmt_router
 from app.api.v1.auth import router as auth_router
+from app.api.v1.gan import router as gan_router
 
 router = APIRouter()
 
@@ -17,6 +18,7 @@ router.include_router(auth_router)
 router.include_router(recommendations_router, prefix="/recommendations", tags=["recommendations"])
 router.include_router(dataset_router, prefix="/dataset", tags=["dataset"])
 router.include_router(dataset_mgmt_router, tags=["dataset_management"])
+router.include_router(gan_router, prefix="/gan", tags=["gan"])
 
 
 @router.get("/health", tags=["health"])

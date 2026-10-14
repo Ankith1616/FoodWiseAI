@@ -1,0 +1,297 @@
+import re
+
+file_path = "backend/app/models/dishes.py"
+with open(file_path, "r", encoding="utf-8") as f:
+    content = f.read()
+
+new_dishes = """SEED_DISHES = [
+    {
+        "id": 1,
+        "name": "Grilled Steak Platter",
+        "restaurant": "The Meat House",
+        "price": 450.0,
+        "rating": 4.8,
+        "category": "Meat",
+        "image_emoji": "🥩",
+        "dataset_file": "Meat/0.jpg",
+        "image_url": "/dataset/Meat/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(1),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Beef", "Salt", "Pepper"]
+    },
+    {
+        "id": 2,
+        "name": "Fried Chicken Wings",
+        "restaurant": "Crispy Bites",
+        "price": 280.0,
+        "rating": 4.6,
+        "category": "Meat",
+        "image_emoji": "🍗",
+        "dataset_file": "Meat/10.jpg",
+        "image_url": "/dataset/Meat/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(2),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Chicken", "Oil", "Spices"]
+    },
+    {
+        "id": 3,
+        "name": "Spaghetti Bolognese",
+        "restaurant": "Italiano",
+        "price": 350.0,
+        "rating": 4.7,
+        "category": "Noodles-Pasta",
+        "image_emoji": "🍝",
+        "dataset_file": "Noodles-Pasta/0.jpg",
+        "image_url": "/dataset/Noodles-Pasta/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(3),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Pasta", "Beef Mince", "Tomato Sauce"]
+    },
+    {
+        "id": 4,
+        "name": "Creamy Alfredo Pasta",
+        "restaurant": "Italiano",
+        "price": 320.0,
+        "rating": 4.5,
+        "category": "Noodles-Pasta",
+        "image_emoji": "🍝",
+        "dataset_file": "Noodles-Pasta/10.jpg",
+        "image_url": "/dataset/Noodles-Pasta/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(4),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Pasta", "Cream", "Cheese"]
+    },
+    {
+        "id": 5,
+        "name": "Classic Cheeseburger",
+        "restaurant": "Burger Joint",
+        "price": 250.0,
+        "rating": 4.4,
+        "category": "Fried food",
+        "image_emoji": "🍔",
+        "dataset_file": "Fried food/0.jpg",
+        "image_url": "/dataset/Fried food/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(5),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Beef Patty", "Cheese", "Bun"]
+    },
+    {
+        "id": 6,
+        "name": "Crispy French Fries",
+        "restaurant": "Burger Joint",
+        "price": 120.0,
+        "rating": 4.3,
+        "category": "Fried food",
+        "image_emoji": "🍟",
+        "dataset_file": "Fried food/10.jpg",
+        "image_url": "/dataset/Fried food/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(6),
+        "dietary_type": "Vegan",
+        "ingredients": ["Potato", "Oil", "Salt"]
+    },
+    {
+        "id": 7,
+        "name": "Fresh Garden Salad",
+        "restaurant": "Green Bowl",
+        "price": 180.0,
+        "rating": 4.6,
+        "category": "Vegetable-Fruit",
+        "image_emoji": "🥗",
+        "dataset_file": "Vegetable-Fruit/0.jpg",
+        "image_url": "/dataset/Vegetable-Fruit/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(7),
+        "dietary_type": "Vegan",
+        "ingredients": ["Lettuce", "Tomato", "Cucumber"]
+    },
+    {
+        "id": 8,
+        "name": "Tropical Fruit Bowl",
+        "restaurant": "Green Bowl",
+        "price": 200.0,
+        "rating": 4.8,
+        "category": "Vegetable-Fruit",
+        "image_emoji": "🥭",
+        "dataset_file": "Vegetable-Fruit/10.jpg",
+        "image_url": "/dataset/Vegetable-Fruit/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(8),
+        "dietary_type": "Vegan",
+        "ingredients": ["Mango", "Pineapple", "Kiwi"]
+    },
+    {
+        "id": 9,
+        "name": "Artisan Sourdough Bread",
+        "restaurant": "The Bakery",
+        "price": 150.0,
+        "rating": 4.7,
+        "category": "Bread",
+        "image_emoji": "🍞",
+        "dataset_file": "Bread/0.jpg",
+        "image_url": "/dataset/Bread/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(9),
+        "dietary_type": "Vegan",
+        "ingredients": ["Flour", "Water", "Yeast"]
+    },
+    {
+        "id": 10,
+        "name": "Garlic Breadsticks",
+        "restaurant": "The Bakery",
+        "price": 140.0,
+        "rating": 4.5,
+        "category": "Bread",
+        "image_emoji": "🥖",
+        "dataset_file": "Bread/10.jpg",
+        "image_url": "/dataset/Bread/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(10),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Flour", "Garlic Butter", "Herbs"]
+    },
+    {
+        "id": 11,
+        "name": "Chocolate Fudge Brownie",
+        "restaurant": "Sweet Treats",
+        "price": 160.0,
+        "rating": 4.9,
+        "category": "Dessert",
+        "image_emoji": "🍩",
+        "dataset_file": "Dessert/0.jpg",
+        "image_url": "/dataset/Dessert/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(11),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Chocolate", "Flour", "Sugar"]
+    },
+    {
+        "id": 12,
+        "name": "Vanilla Ice Cream Sundae",
+        "restaurant": "Sweet Treats",
+        "price": 190.0,
+        "rating": 4.8,
+        "category": "Dessert",
+        "image_emoji": "🍨",
+        "dataset_file": "Dessert/10.jpg",
+        "image_url": "/dataset/Dessert/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(12),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Vanilla Ice Cream", "Syrup", "Cherry"]
+    },
+    {
+        "id": 13,
+        "name": "Steamed Jasmine Rice",
+        "restaurant": "Asian Wok",
+        "price": 110.0,
+        "rating": 4.2,
+        "category": "Rice",
+        "image_emoji": "🍚",
+        "dataset_file": "Rice/0.jpg",
+        "image_url": "/dataset/Rice/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(13),
+        "dietary_type": "Vegan",
+        "ingredients": ["Jasmine Rice", "Water"]
+    },
+    {
+        "id": 14,
+        "name": "Vegetable Fried Rice",
+        "restaurant": "Asian Wok",
+        "price": 180.0,
+        "rating": 4.4,
+        "category": "Rice",
+        "image_emoji": "🍛",
+        "dataset_file": "Rice/10.jpg",
+        "image_url": "/dataset/Rice/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(14),
+        "dietary_type": "Vegan",
+        "ingredients": ["Rice", "Vegetables", "Soy Sauce"]
+    },
+    {
+        "id": 15,
+        "name": "Grilled Salmon Fillet",
+        "restaurant": "Ocean Catch",
+        "price": 520.0,
+        "rating": 4.9,
+        "category": "Seafood",
+        "image_emoji": "🍣",
+        "dataset_file": "Seafood/0.jpg",
+        "image_url": "/dataset/Seafood/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(15),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Salmon", "Lemon", "Herbs"]
+    },
+    {
+        "id": 16,
+        "name": "Crispy Fried Prawns",
+        "restaurant": "Ocean Catch",
+        "price": 430.0,
+        "rating": 4.7,
+        "category": "Seafood",
+        "image_emoji": "🍤",
+        "dataset_file": "Seafood/10.jpg",
+        "image_url": "/dataset/Seafood/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(16),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Prawns", "Batter", "Oil"]
+    },
+    {
+        "id": 17,
+        "name": "Cream of Mushroom Soup",
+        "restaurant": "Soup Kitchen",
+        "price": 150.0,
+        "rating": 4.5,
+        "category": "Soup",
+        "image_emoji": "🍲",
+        "dataset_file": "Soup/0.jpg",
+        "image_url": "/dataset/Soup/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(17),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Mushroom", "Cream", "Broth"]
+    },
+    {
+        "id": 18,
+        "name": "Spicy Tomato Soup",
+        "restaurant": "Soup Kitchen",
+        "price": 130.0,
+        "rating": 4.3,
+        "category": "Soup",
+        "image_emoji": "🥣",
+        "dataset_file": "Soup/10.jpg",
+        "image_url": "/dataset/Soup/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(18),
+        "dietary_type": "Vegan",
+        "ingredients": ["Tomato", "Chili", "Garlic"]
+    },
+    {
+        "id": 19,
+        "name": "Classic Boiled Eggs",
+        "restaurant": "Morning Bites",
+        "price": 60.0,
+        "rating": 4.1,
+        "category": "Egg",
+        "image_emoji": "🥚",
+        "dataset_file": "Egg/0.jpg",
+        "image_url": "/dataset/Egg/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(19),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Egg", "Salt"]
+    },
+    {
+        "id": 20,
+        "name": "Fresh Strawberry Milkshake",
+        "restaurant": "Dairy Delights",
+        "price": 150.0,
+        "rating": 4.6,
+        "category": "Dairy product",
+        "image_emoji": "🥤",
+        "dataset_file": "Dairy product/0.jpg",
+        "image_url": "/dataset/Dairy product/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(20),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Milk", "Strawberry", "Sugar"]
+    }
+]"""
+
+# Replace the SEED_DISHES block in the file
+pattern = re.compile(r'SEED_DISHES = \[\n.*?\]', re.DOTALL)
+new_content = pattern.sub(new_dishes, content)
+
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(new_content)
+
+print("dishes.py updated successfully.")

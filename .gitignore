@@ -24,3 +24,13 @@ Thumbs.db
 
 # Backup ignores
 FoodWiseAi/
+
+# Databases
+*.db
+*.sqlite3
+
+# Large Dataset Folders (downloadable via download_food11.py)
+ai/data/train/
+ai/data/test/
+ai/data/val/
+!ai/data/.gitkeep

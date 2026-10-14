@@ -8,6 +8,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import sys
+import os
+
+# Ensure the root directory (containing 'ai') is in sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from app.api.v1.router import router as v1_router
 from app.core.config import settings
@@ -47,12 +52,19 @@ app.include_router(v1_router, prefix=settings.API_V1_PREFIX)
 # Serve static assets (like dish images and dataset)
 from pathlib import Path
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
-if STATIC_DIR.exists():
-    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+STATIC_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-DATASET_DIR = Path(__file__).resolve().parent.parent.parent / "Dataset"
-if DATASET_DIR.exists():
-    app.mount("/dataset", StaticFiles(directory=str(DATASET_DIR)), name="dataset")
+from fastapi.responses import FileResponse, Response
+
+@app.get("/dataset/{file_path:path}")
+async def get_dataset_file(file_path: str):
+    base_dir = Path(__file__).resolve().parent.parent.parent / "ai" / "data"
+    for folder in ["train", "test", "val"]:
+        candidate = base_dir / folder / file_path
+        if candidate.exists() and candidate.is_file():
+            return FileResponse(str(candidate))
+    return Response(status_code=404)
 
 
 

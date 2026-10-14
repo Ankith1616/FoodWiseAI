@@ -42,7 +42,7 @@ export default function OrdersScreen() {
   const [reorderDish, setReorderDish] = useState<DishDetails | null>(null);
 
   const getImgUri = (imgFilename: string) => {
-    if (!imgFilename) return `${rawBaseUrl}/dataset/images.jpeg`;
+    if (!imgFilename) return `${rawBaseUrl}/dataset/Egg/0.jpg`;
     if (imgFilename.startsWith('/')) return `${rawBaseUrl}${imgFilename}`;
     return `${rawBaseUrl}/dataset/${imgFilename}`;
   };

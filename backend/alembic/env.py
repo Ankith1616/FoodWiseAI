@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.core.config import settings
 from app.models.base import Base
+import app.models.dataset_models  # Ensure models are registered with Base.metadata
 
 # Alembic Config object
 config = context.config

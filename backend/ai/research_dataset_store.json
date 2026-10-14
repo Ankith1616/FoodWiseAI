@@ -635,6 +635,18 @@
       "sample_class": "negative",
       "dwell_time_sec": 4.5,
       "timestamp": "2026-08-08T13:18:00.705905"
+    },
+    {
+      "interaction_id": "INT_E8E74AAE",
+      "user_id": "USR_ANON_DEFAULT",
+      "food_id": 2,
+      "interaction_type": "order",
+      "rating_val": 5.0,
+      "meal_time": "Lunch",
+      "recommendation_source": "explore",
+      "sample_class": "positive",
+      "dwell_time_sec": 0.0,
+      "timestamp": "2026-10-10T17:39:22.527641"
     }
   ],
   "local_foods": [

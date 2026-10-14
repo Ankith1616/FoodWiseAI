@@ -45,8 +45,16 @@ const api = axios.create({
   },
 });
 
+import { useAppStore } from "@/store/useAppStore";
+
 api.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    const token = useAppStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error)
 );
 

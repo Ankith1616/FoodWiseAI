@@ -35,6 +35,7 @@ import Sidebar from '@/components/sidebar';
 const isWeb = Platform.OS === 'web';
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const {
     savedAddresses,
     favoriteFoods,
@@ -145,7 +146,7 @@ export default function ProfileScreen() {
               </View>
               <Pressable
                 style={styles.openProfilerBtn}
-                onPress={() => useRouter().push('/profiler')}
+                onPress={() => router.push('/profiler')}
               >
                 <Ionicons name="sparkles" size={16} color="#FFF" />
                 <Text style={styles.openProfilerBtnText}>Launch Profiler</Text>

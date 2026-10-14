@@ -22,13 +22,17 @@ def hash_password(password: str) -> str:
     """Hashes a password using PBKDF2 with SHA256 and a random 16-byte salt."""
     salt = os.urandom(16)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100_000)
-    return f"{salt.hex()}:${key.hex()}"
+    return f"{salt.hex()}${key.hex()}"
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifies a plain password against a PBKDF2 hash."""
     try:
-        parts = hashed_password.split('$')
+        # Handle the buggy hash format 'salt:$key' as well for backward compatibility
+        if ':$' in hashed_password:
+            parts = hashed_password.split(':$')
+        else:
+            parts = hashed_password.split('$')
         if len(parts) != 2:
             return False
         salt = bytes.fromhex(parts[0])

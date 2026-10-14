@@ -1,0 +1,68 @@
+[
+  {
+    "class_id": 0,
+    "class_name": "Bread",
+    "filename": "gan_dish_bread.png",
+    "url": "/static/generated/gan_dish_bread.png"
+  },
+  {
+    "class_id": 1,
+    "class_name": "Dairy product",
+    "filename": "gan_dish_dairy_product.png",
+    "url": "/static/generated/gan_dish_dairy_product.png"
+  },
+  {
+    "class_id": 2,
+    "class_name": "Dessert",
+    "filename": "gan_dish_dessert.png",
+    "url": "/static/generated/gan_dish_dessert.png"
+  },
+  {
+    "class_id": 3,
+    "class_name": "Egg",
+    "filename": "gan_dish_egg.png",
+    "url": "/static/generated/gan_dish_egg.png"
+  },
+  {
+    "class_id": 4,
+    "class_name": "Fried food",
+    "filename": "gan_dish_fried_food.png",
+    "url": "/static/generated/gan_dish_fried_food.png"
+  },
+  {
+    "class_id": 5,
+    "class_name": "Meat",
+    "filename": "gan_dish_meat.png",
+    "url": "/static/generated/gan_dish_meat.png"
+  },
+  {
+    "class_id": 6,
+    "class_name": "Noodles-Pasta",
+    "filename": "gan_dish_noodles_pasta.png",
+    "url": "/static/generated/gan_dish_noodles_pasta.png"
+  },
+  {
+    "class_id": 7,
+    "class_name": "Rice",
+    "filename": "gan_dish_rice.png",
+    "url": "/static/generated/gan_dish_rice.png"
+  },
+  {
+    "class_id": 8,
+    "class_name": "Seafood",
+    "filename": "gan_dish_seafood.png",
+    "url": "/static/generated/gan_dish_seafood.png"
+  },
+  {
+    "class_id": 9,
+    "class_name": "Soup",
+    "filename": "gan_dish_soup.png",
+    "url": "/static/generated/gan_dish_soup.png"
+  },
+  {
+    "class_id": 10,
+    "class_name": "Vegetable-Fruit",
+    "filename": "gan_dish_vegetable_fruit.png",
+    "url": "/static/generated/gan_dish_vegetable_fruit.png"
+  }
+]

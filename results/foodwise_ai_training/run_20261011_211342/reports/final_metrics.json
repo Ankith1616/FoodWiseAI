@@ -1,0 +1,409 @@
+{
+    "timestamp": "20261011_211342",
+    "device": "cpu",
+    "random_seed": 42,
+    "models": {
+        "cnn_encoder": {
+            "model_name": "FoodWiseCNNEncoder",
+            "dataset": "Food-11 (70/15/15 splits)",
+            "train_samples": 7862,
+            "val_samples": 2290,
+            "test_samples": 2291,
+            "num_classes": 11,
+            "best_epoch": 14,
+            "total_epochs": 15,
+            "cumulative_training_time_sec": 819.71,
+            "test_inference_time_sec": 11.21,
+            "test_accuracy": 0.4976,
+            "test_top5_accuracy": 0.9136,
+            "test_macro_precision": 0.4893,
+            "test_macro_recall": 0.4639,
+            "test_macro_f1": 0.4695,
+            "test_weighted_precision": 0.5037,
+            "test_weighted_recall": 0.4976,
+            "test_weighted_f1": 0.4938,
+            "per_class_metrics": [
+                {
+                    "class_id": 0,
+                    "class_name": "Bread",
+                    "precision": 0.2964,
+                    "recall": 0.3402,
+                    "f1_score": 0.3168,
+                    "support": 244
+                },
+                {
+                    "class_id": 1,
+                    "class_name": "Dairy product",
+                    "precision": 0.4459,
+                    "recall": 0.3402,
+                    "f1_score": 0.386,
+                    "support": 97
+                },
+                {
+                    "class_id": 2,
+                    "class_name": "Dessert",
+                    "precision": 0.4224,
+                    "recall": 0.4298,
+                    "f1_score": 0.4261,
+                    "support": 342
+                },
+                {
+                    "class_id": 3,
+                    "class_name": "Egg",
+                    "precision": 0.4699,
+                    "recall": 0.527,
+                    "f1_score": 0.4968,
+                    "support": 222
+                },
+                {
+                    "class_id": 4,
+                    "class_name": "Fried food",
+                    "precision": 0.4203,
+                    "recall": 0.4372,
+                    "f1_score": 0.4286,
+                    "support": 199
+                },
+                {
+                    "class_id": 5,
+                    "class_name": "Meat",
+                    "precision": 0.5355,
+                    "recall": 0.5993,
+                    "f1_score": 0.5656,
+                    "support": 302
+                },
+                {
+                    "class_id": 6,
+                    "class_name": "Noodles-Pasta",
+                    "precision": 0.5269,
+                    "recall": 0.4667,
+                    "f1_score": 0.4949,
+                    "support": 105
+                },
+                {
+                    "class_id": 7,
+                    "class_name": "Rice",
+                    "precision": 0.2687,
+                    "recall": 0.2609,
+                    "f1_score": 0.2647,
+                    "support": 69
+                },
+                {
+                    "class_id": 8,
+                    "class_name": "Seafood",
+                    "precision": 0.6105,
+                    "recall": 0.2829,
+                    "f1_score": 0.3867,
+                    "support": 205
+                },
+                {
+                    "class_id": 9,
+                    "class_name": "Soup",
+                    "precision": 0.6633,
+                    "recall": 0.7536,
+                    "f1_score": 0.7056,
+                    "support": 345
+                },
+                {
+                    "class_id": 10,
+                    "class_name": "Vegetable-Fruit",
+                    "precision": 0.723,
+                    "recall": 0.6646,
+                    "f1_score": 0.6926,
+                    "support": 161
+                }
+            ],
+            "confusion_matrix": [
+                [
+                    83,
+                    5,
+                    27,
+                    26,
+                    35,
+                    26,
+                    9,
+                    9,
+                    3,
+                    16,
+                    5
+                ],
+                [
+                    12,
+                    33,
+                    20,
+                    13,
+                    4,
+                    4,
+                    0,
+                    1,
+                    1,
+                    7,
+                    2
+                ],
+                [
+                    34,
+                    16,
+                    147,
+                    22,
+                    18,
+                    48,
+                    2,
+                    5,
+                    14,
+                    28,
+                    8
+                ],
+                [
+                    33,
+                    4,
+                    23,
+                    117,
+                    14,
+                    9,
+                    3,
+                    3,
+                    1,
+                    12,
+                    3
+                ],
+                [
+                    43,
+                    0,
+                    13,
+                    16,
+                    87,
+                    17,
+                    2,
+                    2,
+                    2,
+                    15,
+                    2
+                ],
+                [
+                    14,
+                    4,
+                    41,
+                    13,
+                    17,
+                    181,
+                    2,
+                    2,
+                    7,
+                    15,
+                    6
+                ],
+                [
+                    3,
+                    0,
+                    1,
+                    4,
+                    2,
+                    8,
+                    49,
+                    19,
+                    0,
+                    17,
+                    2
+                ],
+                [
+                    12,
+                    1,
+                    3,
+                    3,
+                    4,
+                    4,
+                    12,
+                    18,
+                    0,
+                    11,
+                    1
+                ],
+                [
+                    23,
+                    3,
+                    40,
+                    17,
+                    8,
+                    28,
+                    1,
+                    5,
+                    58,
+                    10,
+                    12
+                ],
+                [
+                    20,
+                    7,
+                    20,
+                    11,
+                    10,
+                    7,
+                    9,
+                    1,
+                    0,
+                    260,
+                    0
+                ],
+                [
+                    3,
+                    1,
+                    13,
+                    7,
+                    8,
+                    6,
+                    4,
+                    2,
+                    9,
+                    1,
+                    107
+                ]
+            ]
+        },
+        "profile_autoencoder": {
+            "model_name": "MetabolicProfileAutoencoder",
+            "dataset_type": "Synthetic Structured Profiles (Survey Mapped)",
+            "train_samples": 3500,
+            "val_samples": 750,
+            "test_samples": 750,
+            "input_dim": 16,
+            "latent_dim": 64,
+            "best_epoch": 25,
+            "total_epochs": 25,
+            "cumulative_training_time_sec": 2.56,
+            "test_reconstruction_mse": 0.000853,
+            "test_reconstruction_mae": 0.020572,
+            "test_reconstruction_rmse": 0.029203,
+            "non_finite_output_count": 0,
+            "latent_shape": [
+                750,
+                64
+            ],
+            "per_feature_errors": [
+                {
+                    "feature_index": 0,
+                    "feature_name": "Indian Cuisine",
+                    "mae": 0.023582,
+                    "mse": 0.001051
+                },
+                {
+                    "feature_index": 1,
+                    "feature_name": "Italian Cuisine",
+                    "mae": 0.023674,
+                    "mse": 0.000906
+                },
+                {
+                    "feature_index": 2,
+                    "feature_name": "Fast Food Cuisine",
+                    "mae": 0.022039,
+                    "mse": 0.000993
+                },
+                {
+                    "feature_index": 3,
+                    "feature_name": "Healthy Cuisine",
+                    "mae": 0.022336,
+                    "mse": 0.000976
+                },
+                {
+                    "feature_index": 4,
+                    "feature_name": "Desserts Cuisine",
+                    "mae": 0.02268,
+                    "mse": 0.001033
+                },
+                {
+                    "feature_index": 5,
+                    "feature_name": "Veg Dietary",
+                    "mae": 0.021321,
+                    "mse": 0.00094
+                },
+                {
+                    "feature_index": 6,
+                    "feature_name": "Vegan Dietary",
+                    "mae": 0.021772,
+                    "mse": 0.000826
+                },
+                {
+                    "feature_index": 7,
+                    "feature_name": "Allergies Flag",
+                    "mae": 0.023772,
+                    "mse": 0.001118
+                },
+                {
+                    "feature_index": 8,
+                    "feature_name": "Weight Loss Goal",
+                    "mae": 0.022333,
+                    "mse": 0.000833
+                },
+                {
+                    "feature_index": 9,
+                    "feature_name": "Muscle Gain Goal",
+                    "mae": 0.023564,
+                    "mse": 0.00108
+                },
+                {
+                    "feature_index": 10,
+                    "feature_name": "Spice Preference",
+                    "mae": 0.023085,
+                    "mse": 0.000859
+                },
+                {
+                    "feature_index": 11,
+                    "feature_name": "Sweet Preference",
+                    "mae": 0.022247,
+                    "mse": 0.000993
+                },
+                {
+                    "feature_index": 12,
+                    "feature_name": "Budget Scale",
+                    "mae": 0.012719,
+                    "mse": 0.00032
+                },
+                {
+                    "feature_index": 13,
+                    "feature_name": "Ordering Freq",
+                    "mae": 0.019639,
+                    "mse": 0.000622
+                },
+                {
+                    "feature_index": 14,
+                    "feature_name": "Dinner Timing",
+                    "mae": 0.020309,
+                    "mse": 0.001067
+                },
+                {
+                    "feature_index": 15,
+                    "feature_name": "Padding Anchor",
+                    "mae": 0.004077,
+                    "mse": 2.7e-05
+                }
+            ]
+        },
+        "ncf_matcher": {
+            "model_name": "NCFSiameseMatcher",
+            "dataset_type": "Synthetic User-Dish Pairs (Archetype Governed)",
+            "train_samples": 2800,
+            "val_samples": 600,
+            "test_samples": 600,
+            "user_dim": 64,
+            "dish_dim": 128,
+            "input_dim": 192,
+            "best_epoch": 1,
+            "total_epochs": 25,
+            "cumulative_training_time_sec": 3.22,
+            "test_accuracy": 1.0,
+            "test_precision": 1.0,
+            "test_recall": 1.0,
+            "test_f1_score": 1.0,
+            "test_specificity": 1.0,
+            "test_balanced_accuracy": 1.0,
+            "test_roc_auc": 1.0,
+            "test_pr_auc": 1.0,
+            "test_bce_loss": 1.1e-05,
+            "test_brier_score": 0.0,
+            "confusion_matrix": {
+                "true_negatives": 300,
+                "false_positives": 0,
+                "false_negatives": 0,
+                "true_positives": 300
+            }
+        }
+    }
+}

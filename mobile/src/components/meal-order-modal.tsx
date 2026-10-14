@@ -75,7 +75,7 @@ export default function MealOrderModal({ dish, visible, onClose }: Props) {
       if (dish.img.startsWith('/')) return `${rawBaseUrl}${dish.img}`;
       return `${rawBaseUrl}/dataset/${dish.img}`;
     }
-    return `${rawBaseUrl}/dataset/images.jpeg`;
+    return `${rawBaseUrl}/dataset/Egg/0.jpg`;
   };
 
   const getProteinGrams = (): number => {
@@ -97,7 +97,7 @@ export default function MealOrderModal({ dish, visible, onClose }: Props) {
   };
 
   const totalPrice = dish.price * quantity;
-  const imageFilename = dish.dataset_file || dish.img || 'dataset_image.jpg';
+  const imageFilename = dish.dataset_file || dish.img || 'Bread/0.jpg';
 
   const handleOrderSubmit = () => {
     const newOrder = placeOrder({
@@ -237,8 +237,8 @@ export default function MealOrderModal({ dish, visible, onClose }: Props) {
               {/* Similar Food Recommendations */}
               <Text style={styles.sectionLabel}>SIMILAR RECOMMENDED DISHES</Text>
               <View style={styles.similarRow}>
-                <View style={styles.similarChip}><Text style={styles.similarChipText}>🍗 Spicy Chicken Lollipop (96%)</Text></View>
-                <View style={styles.similarChip}><Text style={styles.similarChipText}>🥘 Chicken Dum Biryani (94%)</Text></View>
+                <View style={styles.similarChip}><Text style={styles.similarChipText}>🥩 Grilled Steak Platter (98%)</Text></View>
+                <View style={styles.similarChip}><Text style={styles.similarChipText}>🍝 Spaghetti Bolognese (95%)</Text></View>
               </View>
 
               {/* Customization Options */}

@@ -34,6 +34,9 @@ export default function AppTabs() {
           <TabTrigger name="food" href="/food" asChild>
             <NavLink>Food</NavLink>
           </TabTrigger>
+          <TabTrigger name="gan-studio" href={"/gan-studio" as any} asChild>
+            <NavLink>FoodGAN Studio</NavLink>
+          </TabTrigger>
           <TabTrigger name="orders" href="/orders" asChild>
             <NavLink>Orders</NavLink>
           </TabTrigger>
@@ -60,6 +63,7 @@ export function NavLink({ children, isFocused, ...props }: TabTriggerSlotProps) 
 
 /** Top bar container */
 export function TopNavBar(props: TabListProps) {
+  const router = useRouter();
   const { dietaryMode, setDietaryMode } = useAppStore();
 
   return (
@@ -78,7 +82,7 @@ export function TopNavBar(props: TabListProps) {
       {/* Right actions matching exact image */}
       <View style={styles.rightActions}>
         {/* Bell Notification with red count badge */}
-        <Pressable style={styles.notifBtn} onPress={() => useRouter().push('/orders')}>
+        <Pressable style={styles.notifBtn} onPress={() => router.push('/orders')}>
           <Ionicons name="notifications" size={16} color="#475569" />
           <View style={styles.notifBadge}>
             <Text style={styles.notifBadgeText}>3</Text>
@@ -112,7 +116,7 @@ export function TopNavBar(props: TabListProps) {
         </Pressable>
 
         {/* User Profile Avatar with dropdown arrow */}
-        <Pressable style={styles.userProfileBtn} onPress={() => useRouter().push('/profile')}>
+        <Pressable style={styles.userProfileBtn} onPress={() => router.push('/profile')}>
           <Image
             source={{ uri: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80' }}
             style={styles.userAvatarImg}

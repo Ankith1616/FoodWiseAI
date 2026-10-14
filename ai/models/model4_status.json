@@ -1,0 +1,28 @@
+{
+  "status": "trained",
+  "model_name": "FoodConditionalGAN",
+  "architecture": "Auxiliary Classifier Generative Adversarial Network (AC-GAN)",
+  "latent_dim": 100,
+  "num_classes": 11,
+  "classes": [
+    "Bread",
+    "Dairy product",
+    "Dessert",
+    "Egg",
+    "Fried food",
+    "Meat",
+    "Noodles-Pasta",
+    "Rice",
+    "Seafood",
+    "Soup",
+    "Vegetable-Fruit"
+  ],
+  "epochs_trained": 2,
+  "final_generator_loss": 2.7037,
+  "final_discriminator_loss": 2.8652,
+  "final_discriminator_acc": 0.5551,
+  "generator_checkpoint": "food_gan_generator.pth",
+  "discriminator_checkpoint": "food_gan_discriminator.pth",
+  "training_time_sec": 13.4,
+  "timestamp": "2026-10-14T21:47:11.685927"
+}

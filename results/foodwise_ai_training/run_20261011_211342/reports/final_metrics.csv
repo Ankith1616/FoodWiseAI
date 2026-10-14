@@ -1,0 +1,4 @@
+Model Name,Task / Problem,Dataset Source,Best Epoch,Primary Metric 1,Primary Metric 2,Primary Metric 3,Training Time (s),Limitations / Caveats
+FoodWiseCNNEncoder,11-Class Food Image Feature Extraction,Food-11 (Genuine Train/Val/Test),14,Accuracy: 49.76%,Macro F1: 0.4695,Top-5 Acc: 91.36%,819.71,Evaluated on genuine Food-11 test images. Lightweight CNN for fast CPU inference.
+Profile Autoencoder,16-D User Profile Latent Representation (64-D),"Synthetic Survey-Mapped Profiles (5,000 samples)",25,Recon MSE: 0.000853,Recon MAE: 0.0206,Recon RMSE: 0.0292,2.56,Synthetic profile reconstruction performance. Does not claim real human clinical validation.
+NCFSiameseMatcher,192-D User-Dish Compatibility Binary Matching,"Synthetic Archetype Pairs (4,000 samples)",1,Accuracy: 100.00%,F1-Score: 1.0000,ROC-AUC: 1.0000,3.22,"Agreement with synthetic archetype rules. Compatibility score, not calibrated user likelihood."

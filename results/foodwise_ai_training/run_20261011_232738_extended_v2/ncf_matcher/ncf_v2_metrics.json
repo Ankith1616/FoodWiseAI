@@ -1,0 +1,31 @@
+{
+    "model_name": "NCFSiameseMatcher_v2",
+    "dataset_type": "Synthetic User-Dish Pairs (Archetype Governed)",
+    "train_samples": 2800,
+    "val_samples": 600,
+    "test_samples": 600,
+    "user_dim": 64,
+    "dish_dim": 128,
+    "input_dim": 192,
+    "best_epoch": 1,
+    "total_epochs": 25,
+    "best_checkpoint_file": "ncf_v2_best.pth",
+    "last_checkpoint_file": "ncf_v2_last.pth",
+    "cumulative_training_time_sec": 4.76,
+    "test_accuracy": 1.0,
+    "test_precision": 1.0,
+    "test_recall": 1.0,
+    "test_f1_score": 1.0,
+    "test_specificity": 1.0,
+    "test_balanced_accuracy": 1.0,
+    "test_roc_auc": 1.0,
+    "test_pr_auc": 1.0,
+    "test_bce_loss": 8e-06,
+    "test_brier_score": 0.0,
+    "confusion_matrix": {
+        "true_negatives": 300,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "true_positives": 300
+    }
+}

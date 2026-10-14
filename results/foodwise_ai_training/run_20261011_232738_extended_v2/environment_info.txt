@@ -1,0 +1,7 @@
+Timestamp: 20261011_232738
+Version Suffix: _v2
+Python: 3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]
+PyTorch: 2.6.0+cpu
+Device: cpu
+Random Seed: 42
+Dataset Path: C:\Users\V\Desktop\AMRITA\SEM-7\Neural Networks and Deep Learning\FoodWiseAi\ai\data

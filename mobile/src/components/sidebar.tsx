@@ -24,13 +24,14 @@ import { useAppStore } from '@/store/useAppStore';
 
 type NavItem = {
   label:  string;
-  href:   '/' | '/food' | '/explore' | '/orders' | '/profile' | '/dataset' | '/admin-dataset';
+  href:   '/' | '/food' | '/explore' | '/gan-studio' | '/orders' | '/profile' | '/dataset' | '/admin-dataset';
   icon:   keyof typeof Ionicons.glyphMap;
 };
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard',        href: '/',             icon: 'grid-outline'          },
   { label: 'Food',             href: '/food',         icon: 'fast-food-outline'      },
+  { label: 'FoodGAN Studio',   href: '/gan-studio',   icon: 'color-wand-outline'    },
   { label: 'Recommendations',  href: '/explore',      icon: 'sparkles-outline'      },
   { label: 'Dataset Gallery',  href: '/dataset',      icon: 'images-outline'        },
   { label: 'Dataset Admin',    href: '/admin-dataset',icon: 'analytics-outline'     },
@@ -63,7 +64,7 @@ export default function Sidebar() {
             <Pressable
               key={item.href}
               style={[styles.navItem, active && styles.navItemActive]}
-              onPress={() => router.push(item.href)}
+              onPress={() => router.push(item.href as any)}
             >
               <Ionicons
                 name={item.icon}

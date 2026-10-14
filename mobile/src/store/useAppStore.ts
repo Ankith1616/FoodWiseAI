@@ -59,6 +59,10 @@ export interface UserSurveyPreferences {
 interface AppState {
   /** Whether the app has finished initial loading */
   isReady: boolean;
+  
+  /** Auth State */
+  token: string | null;
+  user: any | null;
 
   /** Visual Appetite Profiler state */
   likedDishIds: number[];
@@ -87,6 +91,9 @@ interface AppState {
 
   /** Actions */
   setReady: (ready: boolean) => void;
+  setToken: (token: string | null) => void;
+  setUser: (user: any | null) => void;
+  logout: () => void;
   setLikedDishIds: (ids: number[]) => void;
   setTasteRecommendations: (recs: any[]) => void;
   setUserVectorSummary: (summary: string) => void;
@@ -106,54 +113,54 @@ const SEED_ORDERS: OrderItem[] = [
   {
     id: "ORD-9482",
     dishId: 1,
-    dishName: "Chicken Lollipop Drums",
-    restaurant: "Spice Station",
-    price: 260,
-    quantity: 2,
-    totalPrice: 520,
-    image: "best_chicken_lollipop_drums_of_chicken-500x500.jpg",
-    category: "Indian",
+    dishName: "Grilled Steak Platter",
+    restaurant: "The Meat House",
+    price: 450,
+    quantity: 1,
+    totalPrice: 450,
+    image: "Meat/0.jpg",
+    category: "Meat",
     spiceLevel: "Medium",
     mealTime: "Dinner 🌙",
-    instructions: "Extra mint chutney please",
+    instructions: "Well done, extra sauce",
     date: "Yesterday at 8:30 PM",
     status: "Delivered ✅",
-    kcal: 450,
-    proteinGrams: 32,
+    kcal: 750,
+    proteinGrams: 50,
   },
   {
     id: "ORD-8391",
     dishId: 14,
-    dishName: "Chicken Dum Biryani",
-    restaurant: "Biryani Zone",
-    price: 280,
-    quantity: 1,
-    totalPrice: 280,
-    image: "images (10).jpeg",
-    category: "Indian",
+    dishName: "Vegetable Fried Rice",
+    restaurant: "Asian Wok",
+    price: 180,
+    quantity: 2,
+    totalPrice: 360,
+    image: "Rice/10.jpg",
+    category: "Rice",
     spiceLevel: "Spicy",
     mealTime: "Lunch ☀️",
     date: "2 days ago at 1:15 PM",
     status: "Delivered ✅",
-    kcal: 510,
-    proteinGrams: 32,
+    kcal: 420,
+    proteinGrams: 10,
   },
   {
     id: "ORD-7290",
     dishId: 20,
-    dishName: "Italian Pizza with Olives",
-    restaurant: "Toscano Pizzeria",
-    price: 380,
+    dishName: "Fresh Strawberry Milkshake",
+    restaurant: "Dairy Delights",
+    price: 150,
     quantity: 1,
-    totalPrice: 380,
-    image: "pizza-with-olives-tomatoes-olives-it_1268410-858.avif",
-    category: "Italian",
+    totalPrice: 150,
+    image: "Dairy product/0.jpg",
+    category: "Dairy product",
     spiceLevel: "Mild",
-    mealTime: "Dinner 🌙",
+    mealTime: "Snack 🍎",
     date: "4 days ago at 9:00 PM",
     status: "Delivered ✅",
-    kcal: 560,
-    proteinGrams: 20,
+    kcal: 300,
+    proteinGrams: 8,
   },
 ];
 
@@ -209,6 +216,8 @@ const DEFAULT_SURVEY_PREFS: UserSurveyPreferences = {
 
 export const useAppStore = create<AppState>((set) => ({
   isReady: false,
+  token: null,
+  user: null,
   likedDishIds: [],
   tasteRecommendations: [],
   userVectorSummary: "",
@@ -229,6 +238,9 @@ export const useAppStore = create<AppState>((set) => ({
   surveyResponses: SEED_SURVEY_RESPONSES,
 
   setReady: (ready) => set({ isReady: ready }),
+  setToken: (token) => set({ token }),
+  setUser: (user) => set({ user }),
+  logout: () => set({ token: null, user: null, tasteRecommendations: [], likedDishIds: [] }),
   setLikedDishIds: (ids) => set({ likedDishIds: ids }),
   setTasteRecommendations: (recs) => set({ tasteRecommendations: recs }),
   setUserVectorSummary: (summary) => set({ userVectorSummary: summary }),
@@ -274,17 +286,22 @@ export const useAppStore = create<AppState>((set) => ({
 
     // Post order interaction event to backend DB with Hard-Negative Classifier
     try {
-      fetch('http://localhost:8000/api/v1/interactions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: 'USR_PROD_APP_USER',
-          food_id: orderData.dishId,
-          interaction_type: 'order',
-          rating_val: 5.0,
-          recommendation_source: 'explore',
-        }),
-      }).catch((e) => console.warn('Order interaction track note:', e));
+      const state = useAppStore.getState();
+      if (state.token) {
+        fetch('http://localhost:8000/api/v1/interactions', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${state.token}`
+          },
+          body: JSON.stringify({
+            food_id: orderData.dishId,
+            interaction_type: 'order',
+            rating_val: 5.0,
+            meal_time: orderData.mealTime ? orderData.mealTime.split(' ')[0] : 'Lunch',
+          }),
+        }).catch((e) => console.warn('Order interaction track note:', e));
+      }
     } catch (e) {}
 
     return newOrder;
@@ -292,18 +309,22 @@ export const useAppStore = create<AppState>((set) => ({
 
   trackInteraction: (foodId: number, type: string, rating?: number, dwellSec?: number, source?: string) => {
     try {
-      fetch('http://localhost:8000/api/v1/interactions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: 'USR_PROD_APP_USER',
-          food_id: foodId,
-          interaction_type: type,
-          rating_val: rating,
-          dwell_time_sec: dwellSec || 1.5,
-          recommendation_source: source || 'explore',
-        }),
-      }).catch((e) => console.warn('Interaction track note:', e));
+      const state = useAppStore.getState();
+      if (state.token) {
+        fetch('http://localhost:8000/api/v1/interactions', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${state.token}`
+          },
+          body: JSON.stringify({
+            food_id: foodId,
+            interaction_type: type,
+            rating_val: rating,
+            meal_time: 'Dinner',
+          }),
+        }).catch((e) => console.warn('Interaction track note:', e));
+      }
     } catch (e) {}
   },
 

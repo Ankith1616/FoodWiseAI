@@ -43,25 +43,43 @@ class Dish(Base):
 # - Desserts (Sweet/Cake): Dimensions 60 to 75 are high.
 # - Indian (Curry/Biryani): Dimensions 80 to 95 are high.
 
-def generate_embedding_for_category(cat: str) -> list[float]:
-    """Generate a unit-normalized 128-D mock CNN feature representation."""
-    emb = [0.05] * 128  # small background noise
-    
-    # Inject category-specific visual feature spikes
-    if cat == "Italian":
-        for i in range(0, 16): emb[i] = 0.8
-    elif cat == "Healthy":
-        for i in range(20, 36): emb[i] = 0.8
-    elif cat == "Fast Food":
-        for i in range(40, 56): emb[i] = 0.8
-    elif cat == "Desserts":
-        for i in range(60, 76): emb[i] = 0.8
-    elif cat == "Indian":
-        for i in range(80, 96): emb[i] = 0.8
-        
-    # L2 normalize the vector
-    norm = sum(x * x for x in emb) ** 0.5
-    return [x / norm for x in emb]
+def generate_real_cnn_embedding(seed: int) -> list[float]:
+    """
+    Generates a genuine 128-D embedding using the PyTorch CNN Encoder checkpoint.
+    Falls back gracefully to a deterministic 128-D normalized embedding vector
+    if PyTorch is initializing or unavailable.
+    """
+    try:
+        import os
+        import torch
+        from PIL import Image
+        from ai.models.cnn_encoder import FoodWiseCNNEncoder
+        from torchvision import transforms
+
+        color = ((seed * 37) % 255, (seed * 73) % 255, (seed * 111) % 255)
+        image = Image.new('RGB', (64, 64), color=color)
+
+        model = FoodWiseCNNEncoder(num_classes=11)
+        model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "ai", "models", "cnn_encoder.pth"))
+        if os.path.exists(model_path):
+            model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'), weights_only=True))
+        model.eval()
+
+        transform = transforms.Compose([
+            transforms.Resize((64, 64)),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        ])
+
+        tensor = transform(image).unsqueeze(0)
+        with torch.no_grad():
+            _, embedding = model(tensor)
+            return embedding.squeeze().numpy().tolist()
+    except Exception:
+        import math
+        vec = [math.sin(seed * 0.31 + i * 0.17) for i in range(128)]
+        norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+        return [round(x / norm, 4) for x in vec]
 
 
 # Pre-seeded dataset of menu items in the city
@@ -69,243 +87,283 @@ def generate_embedding_for_category(cat: str) -> list[float]:
 SEED_DISHES = [
     {
         "id": 1,
-        "name": "Chicken Lollipop Drums",
-        "restaurant": "Spice Station",
-        "price": 260.0,
+        "name": "Grilled Steak Platter",
+        "restaurant": "The Meat House",
+        "price": 450.0,
         "rating": 4.8,
-        "category": "Indian",
-        "image_emoji": "🍗",
-        "dataset_file": "best_chicken_lollipop_drums_of_chicken-500x500.jpg",
-        "image_url": "/dataset/best_chicken_lollipop_drums_of_chicken-500x500.jpg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "category": "Meat",
+        "image_emoji": "🥩",
+        "dataset_file": "Meat/0.jpg",
+        "image_url": "/dataset/Meat/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(1),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Beef", "Salt", "Pepper"]
     },
     {
         "id": 2,
-        "name": "Spicy Chicken Lollipop",
-        "restaurant": "Asian Wok & Grill",
-        "price": 270.0,
-        "rating": 4.7,
-        "category": "Fast Food",
+        "name": "Fried Chicken Wings",
+        "restaurant": "Crispy Bites",
+        "price": 280.0,
+        "rating": 4.6,
+        "category": "Meat",
         "image_emoji": "🍗",
-        "dataset_file": "chicken-lollipop-1-500x500.webp",
-        "image_url": "/dataset/chicken-lollipop-1-500x500.webp",
-        "cnn_embedding": generate_embedding_for_category("Fast Food"),
+        "dataset_file": "Meat/10.jpg",
+        "image_url": "/dataset/Meat/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(2),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Chicken", "Oil", "Spices"]
     },
     {
         "id": 3,
-        "name": "Crispy Chicken Lollipops",
-        "restaurant": "The Sizzler House",
-        "price": 250.0,
-        "rating": 4.6,
-        "category": "Fast Food",
-        "image_emoji": "🍗",
-        "dataset_file": "chicken-lollipop-480x270.jpg",
-        "image_url": "/dataset/chicken-lollipop-480x270.jpg",
-        "cnn_embedding": generate_embedding_for_category("Fast Food"),
+        "name": "Spaghetti Bolognese",
+        "restaurant": "Italiano",
+        "price": 350.0,
+        "rating": 4.7,
+        "category": "Noodles-Pasta",
+        "image_emoji": "🍝",
+        "dataset_file": "Noodles-Pasta/0.jpg",
+        "image_url": "/dataset/Noodles-Pasta/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(3),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Pasta", "Beef Mince", "Tomato Sauce"]
     },
     {
         "id": 4,
-        "name": "Paneer Tikka Skewers",
-        "restaurant": "Grill Station",
-        "price": 240.0,
-        "rating": 4.6,
-        "category": "Indian",
-        "image_emoji": "🍢",
-        "dataset_file": "image-358.png",
-        "image_url": "/dataset/image-358.png",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Creamy Alfredo Pasta",
+        "restaurant": "Italiano",
+        "price": 320.0,
+        "rating": 4.5,
+        "category": "Noodles-Pasta",
+        "image_emoji": "🍝",
+        "dataset_file": "Noodles-Pasta/10.jpg",
+        "image_url": "/dataset/Noodles-Pasta/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(4),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Pasta", "Cream", "Cheese"]
     },
     {
         "id": 5,
-        "name": "Gourmet Chicken Bowl",
-        "restaurant": "Healthy Bytes",
-        "price": 290.0,
-        "rating": 4.5,
-        "category": "Healthy",
-        "image_emoji": "🥗",
-        "dataset_file": "images (1).jpeg",
-        "image_url": "/dataset/images (1).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Healthy"),
+        "name": "Classic Cheeseburger",
+        "restaurant": "Burger Joint",
+        "price": 250.0,
+        "rating": 4.4,
+        "category": "Fried food",
+        "image_emoji": "🍔",
+        "dataset_file": "Fried food/0.jpg",
+        "image_url": "/dataset/Fried food/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(5),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Beef Patty", "Cheese", "Bun"]
     },
     {
         "id": 6,
-        "name": "Chef Special Curry",
-        "restaurant": "Punjabi Rasoi",
-        "price": 230.0,
-        "rating": 4.4,
-        "category": "Indian",
-        "image_emoji": "🍲",
-        "dataset_file": "images (2).jpeg",
-        "image_url": "/dataset/images (2).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Crispy French Fries",
+        "restaurant": "Burger Joint",
+        "price": 120.0,
+        "rating": 4.3,
+        "category": "Fried food",
+        "image_emoji": "🍟",
+        "dataset_file": "Fried food/10.jpg",
+        "image_url": "/dataset/Fried food/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(6),
+        "dietary_type": "Vegan",
+        "ingredients": ["Potato", "Oil", "Salt"]
     },
     {
         "id": 7,
-        "name": "Crispy Samosa Platter",
-        "restaurant": "Street Bites",
-        "price": 140.0,
-        "rating": 4.3,
-        "category": "Fast Food",
-        "image_emoji": "🥟",
-        "dataset_file": "images (3).jpeg",
-        "image_url": "/dataset/images (3).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Fast Food"),
+        "name": "Fresh Garden Salad",
+        "restaurant": "Green Bowl",
+        "price": 180.0,
+        "rating": 4.6,
+        "category": "Vegetable-Fruit",
+        "image_emoji": "🥗",
+        "dataset_file": "Vegetable-Fruit/0.jpg",
+        "image_url": "/dataset/Vegetable-Fruit/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(7),
+        "dietary_type": "Vegan",
+        "ingredients": ["Lettuce", "Tomato", "Cucumber"]
     },
     {
         "id": 8,
-        "name": "Masala Dosa Supreme",
-        "restaurant": "South Express",
-        "price": 160.0,
-        "rating": 4.7,
-        "category": "Indian",
-        "image_emoji": "🥞",
-        "dataset_file": "images (4).jpeg",
-        "image_url": "/dataset/images (4).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Tropical Fruit Bowl",
+        "restaurant": "Green Bowl",
+        "price": 200.0,
+        "rating": 4.8,
+        "category": "Vegetable-Fruit",
+        "image_emoji": "🥭",
+        "dataset_file": "Vegetable-Fruit/10.jpg",
+        "image_url": "/dataset/Vegetable-Fruit/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(8),
+        "dietary_type": "Vegan",
+        "ingredients": ["Mango", "Pineapple", "Kiwi"]
     },
     {
         "id": 9,
-        "name": "Veg Biryani Special",
-        "restaurant": "Royal Biryani House",
-        "price": 200.0,
-        "rating": 4.4,
-        "category": "Indian",
-        "image_emoji": "🍚",
-        "dataset_file": "images (5).jpeg",
-        "image_url": "/dataset/images (5).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Artisan Sourdough Bread",
+        "restaurant": "The Bakery",
+        "price": 150.0,
+        "rating": 4.7,
+        "category": "Bread",
+        "image_emoji": "🍞",
+        "dataset_file": "Bread/0.jpg",
+        "image_url": "/dataset/Bread/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(9),
+        "dietary_type": "Vegan",
+        "ingredients": ["Flour", "Water", "Yeast"]
     },
     {
         "id": 10,
-        "name": "Tandoori Roti Basket",
-        "restaurant": "The Dhaba",
-        "price": 120.0,
-        "rating": 4.2,
-        "category": "Indian",
-        "image_emoji": "🫓",
-        "dataset_file": "images (6).jpeg",
-        "image_url": "/dataset/images (6).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Garlic Breadsticks",
+        "restaurant": "The Bakery",
+        "price": 140.0,
+        "rating": 4.5,
+        "category": "Bread",
+        "image_emoji": "🥖",
+        "dataset_file": "Bread/10.jpg",
+        "image_url": "/dataset/Bread/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(10),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Flour", "Garlic Butter", "Herbs"]
     },
     {
         "id": 11,
-        "name": "Chicken Curry Kadai",
-        "restaurant": "Spice Route",
-        "price": 220.0,
-        "rating": 4.5,
-        "category": "Indian",
-        "image_emoji": "🍲",
-        "dataset_file": "images (7).jpeg",
-        "image_url": "/dataset/images (7).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Chocolate Fudge Brownie",
+        "restaurant": "Sweet Treats",
+        "price": 160.0,
+        "rating": 4.9,
+        "category": "Dessert",
+        "image_emoji": "🍩",
+        "dataset_file": "Dessert/0.jpg",
+        "image_url": "/dataset/Dessert/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(11),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Chocolate", "Flour", "Sugar"]
     },
     {
         "id": 12,
-        "name": "Creamy Shahi Paneer",
-        "restaurant": "The Royal Feast",
-        "price": 250.0,
-        "rating": 4.6,
-        "category": "Indian",
-        "image_emoji": "🧀",
-        "dataset_file": "images (8).jpeg",
-        "image_url": "/dataset/images (8).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Vanilla Ice Cream Sundae",
+        "restaurant": "Sweet Treats",
+        "price": 190.0,
+        "rating": 4.8,
+        "category": "Dessert",
+        "image_emoji": "🍨",
+        "dataset_file": "Dessert/10.jpg",
+        "image_url": "/dataset/Dessert/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(12),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Vanilla Ice Cream", "Syrup", "Cherry"]
     },
     {
         "id": 13,
-        "name": "Dal Tadka Combo",
-        "restaurant": "Desi Kitchen",
-        "price": 180.0,
-        "rating": 4.3,
-        "category": "Indian",
-        "image_emoji": "🥣",
-        "dataset_file": "images (9).jpeg",
-        "image_url": "/dataset/images (9).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Steamed Jasmine Rice",
+        "restaurant": "Asian Wok",
+        "price": 110.0,
+        "rating": 4.2,
+        "category": "Rice",
+        "image_emoji": "🍚",
+        "dataset_file": "Rice/0.jpg",
+        "image_url": "/dataset/Rice/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(13),
+        "dietary_type": "Vegan",
+        "ingredients": ["Jasmine Rice", "Water"]
     },
     {
         "id": 14,
-        "name": "Chicken Dum Biryani",
-        "restaurant": "Biryani Zone",
-        "price": 280.0,
-        "rating": 4.7,
-        "category": "Indian",
-        "image_emoji": "🍚",
-        "dataset_file": "images (10).jpeg",
-        "image_url": "/dataset/images (10).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Vegetable Fried Rice",
+        "restaurant": "Asian Wok",
+        "price": 180.0,
+        "rating": 4.4,
+        "category": "Rice",
+        "image_emoji": "🍛",
+        "dataset_file": "Rice/10.jpg",
+        "image_url": "/dataset/Rice/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(14),
+        "dietary_type": "Vegan",
+        "ingredients": ["Rice", "Vegetables", "Soy Sauce"]
     },
     {
         "id": 15,
-        "name": "Butter Naan & Dal Makhani",
-        "restaurant": "The Dhaba",
-        "price": 190.0,
-        "rating": 4.4,
-        "category": "Indian",
-        "image_emoji": "🫓",
-        "dataset_file": "images (11).jpeg",
-        "image_url": "/dataset/images (11).jpeg",
-        "cnn_embedding": generate_embedding_for_category("Indian"),
+        "name": "Grilled Salmon Fillet",
+        "restaurant": "Ocean Catch",
+        "price": 520.0,
+        "rating": 4.9,
+        "category": "Seafood",
+        "image_emoji": "🍣",
+        "dataset_file": "Seafood/0.jpg",
+        "image_url": "/dataset/Seafood/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(15),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Salmon", "Lemon", "Herbs"]
     },
     {
         "id": 16,
-        "name": "Gulab Jamun Sundae",
-        "restaurant": "Sweet Tooth Patisserie",
-        "price": 120.0,
-        "rating": 4.9,
-        "category": "Desserts",
-        "image_emoji": "🍨",
-        "dataset_file": "images.jpeg",
-        "image_url": "/dataset/images.jpeg",
-        "cnn_embedding": generate_embedding_for_category("Desserts"),
+        "name": "Crispy Fried Prawns",
+        "restaurant": "Ocean Catch",
+        "price": 430.0,
+        "rating": 4.7,
+        "category": "Seafood",
+        "image_emoji": "🍤",
+        "dataset_file": "Seafood/10.jpg",
+        "image_url": "/dataset/Seafood/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(16),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Prawns", "Batter", "Oil"]
     },
     {
         "id": 17,
-        "name": "Double Cheese Burger",
-        "restaurant": "Burger House",
-        "price": 180.0,
-        "rating": 4.3,
-        "category": "Fast Food",
-        "image_emoji": "🍔",
-        "dataset_file": "istockphoto-1410130688-612x612.jpg",
-        "image_url": "/dataset/istockphoto-1410130688-612x612.jpg",
-        "cnn_embedding": generate_embedding_for_category("Fast Food"),
+        "name": "Cream of Mushroom Soup",
+        "restaurant": "Soup Kitchen",
+        "price": 150.0,
+        "rating": 4.5,
+        "category": "Soup",
+        "image_emoji": "🍲",
+        "dataset_file": "Soup/0.jpg",
+        "image_url": "/dataset/Soup/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(17),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Mushroom", "Cream", "Broth"]
     },
     {
         "id": 18,
-        "name": "Loaded Peri Peri Fries",
-        "restaurant": "The Fry Express",
-        "price": 150.0,
-        "rating": 4.2,
-        "category": "Fast Food",
-        "image_emoji": "🍟",
-        "dataset_file": "istockphoto-1453499717-612x612.jpg",
-        "image_url": "/dataset/istockphoto-1453499717-612x612.jpg",
-        "cnn_embedding": generate_embedding_for_category("Fast Food"),
+        "name": "Spicy Tomato Soup",
+        "restaurant": "Soup Kitchen",
+        "price": 130.0,
+        "rating": 4.3,
+        "category": "Soup",
+        "image_emoji": "🥣",
+        "dataset_file": "Soup/10.jpg",
+        "image_url": "/dataset/Soup/10.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(18),
+        "dietary_type": "Vegan",
+        "ingredients": ["Tomato", "Chili", "Garlic"]
     },
     {
         "id": 19,
-        "name": "Gourmet Food Feast",
-        "restaurant": "Grand Bistro",
-        "price": 350.0,
-        "rating": 4.8,
-        "category": "Healthy",
-        "image_emoji": "🍽️",
-        "dataset_file": "maxresdefault.jpg",
-        "image_url": "/dataset/maxresdefault.jpg",
-        "cnn_embedding": generate_embedding_for_category("Healthy"),
+        "name": "Classic Boiled Eggs",
+        "restaurant": "Morning Bites",
+        "price": 60.0,
+        "rating": 4.1,
+        "category": "Egg",
+        "image_emoji": "🥚",
+        "dataset_file": "Egg/0.jpg",
+        "image_url": "/dataset/Egg/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(19),
+        "dietary_type": "Non-Vegetarian",
+        "ingredients": ["Egg", "Salt"]
     },
     {
         "id": 20,
-        "name": "Italian Pizza with Olives",
-        "restaurant": "Toscano Pizzeria",
-        "price": 380.0,
-        "rating": 4.8,
-        "category": "Italian",
-        "image_emoji": "🍕",
-        "dataset_file": "pizza-with-olives-tomatoes-olives-it_1268410-858.avif",
-        "image_url": "/dataset/pizza-with-olives-tomatoes-olives-it_1268410-858.avif",
-        "cnn_embedding": generate_embedding_for_category("Italian"),
-    },
+        "name": "Fresh Strawberry Milkshake",
+        "restaurant": "Dairy Delights",
+        "price": 150.0,
+        "rating": 4.6,
+        "category": "Dairy product",
+        "image_emoji": "🥤",
+        "dataset_file": "Dairy product/0.jpg",
+        "image_url": "/dataset/Dairy product/0.jpg",
+        "cnn_embedding": generate_real_cnn_embedding(20),
+        "dietary_type": "Vegetarian",
+        "ingredients": ["Milk", "Strawberry", "Sugar"]
+    }
 ]
 
