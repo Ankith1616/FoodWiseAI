@@ -34,3 +34,7 @@ ai/data/train/
 ai/data/test/
 ai/data/val/
 !ai/data/.gitkeep
+
+# Runtime generated food GAN images
+backend/app/static/generated/syn_*.png
+
