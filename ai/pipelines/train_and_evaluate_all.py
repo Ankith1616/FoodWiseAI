@@ -29,6 +29,14 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.data import DataLoader, TensorDataset
+
+# Windows PyTorch / torchvision ABI compatibility patch
+try:
+    _tv_lib = torch.library.Library('torchvision', 'DEF')
+    _tv_lib.define('nms(Tensor dets, Tensor scores, float iou_threshold) -> Tensor')
+except Exception:
+    pass
+
 from torchvision import datasets, transforms
 from PIL import Image
 from sklearn.metrics import (
