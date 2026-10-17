@@ -11,8 +11,12 @@ from fastapi.middleware.cors import CORSMiddleware
 import sys
 import os
 
-# Ensure the root directory (containing 'ai') is in sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+# Ensure both 'backend' (containing 'app') and root (containing 'ai') are in sys.path
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_dir = os.path.abspath(os.path.join(backend_dir, ".."))
+for p in [backend_dir, root_dir]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from app.api.v1.router import router as v1_router
 from app.core.config import settings

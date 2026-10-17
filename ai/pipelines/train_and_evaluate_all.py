@@ -155,9 +155,34 @@ def train_and_eval_cnn(
     val_path = os.path.join(data_dir, "val")
     test_path = os.path.join(data_dir, "test")
 
-    train_ds = datasets.ImageFolder(train_path, transform=train_transform)
-    val_ds = datasets.ImageFolder(val_path, transform=eval_transform)
-    test_ds = datasets.ImageFolder(test_path, transform=eval_transform)
+    class FastCachedDataset(torch.utils.data.Dataset):
+        def __init__(self, folder_path, transform, preload_size=(128, 128)):
+            self.transform = transform
+            raw_ds = datasets.ImageFolder(folder_path)
+            self.classes = raw_ds.classes
+            self.class_to_idx = raw_ds.class_to_idx
+            print(f"Pre-caching {len(raw_ds)} images from {os.path.basename(folder_path)} into RAM for CPU acceleration...", flush=True)
+            self.samples = []
+            for path, target in raw_ds.samples:
+                try:
+                    with Image.open(path) as img:
+                        resized = img.convert("RGB").resize(preload_size, Image.BILINEAR)
+                        self.samples.append((resized, target))
+                except Exception:
+                    self.samples.append((Image.new("RGB", preload_size, (128, 128, 128)), target))
+
+        def __len__(self):
+            return len(self.samples)
+
+        def __getitem__(self, idx):
+            img, target = self.samples[idx]
+            if self.transform:
+                img = self.transform(img)
+            return img, target
+
+    train_ds = FastCachedDataset(train_path, transform=train_transform, preload_size=(128, 128))
+    val_ds = FastCachedDataset(val_path, transform=eval_transform, preload_size=(64, 64))
+    test_ds = FastCachedDataset(test_path, transform=eval_transform, preload_size=(64, 64))
 
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0)
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0)
@@ -448,6 +473,28 @@ def train_and_eval_cnn(
     plt.close()
 
     print(f"SUCCESS: CNN evaluation complete! Test Accuracy: {test_acc*100:.2f}%, Top-5: {top5_acc*100:.2f}%, Macro F1: {test_macro_f1:.4f}", flush=True)
+
+    # Automatically deploy best weights to active production cnn_encoder.pth & update model1_status.json
+    prod_model_dir = os.path.abspath(os.path.join(PROJECT_ROOT, "ai", "models"))
+    prod_ckpt_path = os.path.join(prod_model_dir, "cnn_encoder.pth")
+    prod_status_path = os.path.join(prod_model_dir, "model1_status.json")
+    try:
+        torch.save(model.state_dict(), prod_ckpt_path)
+        with open(prod_status_path, "w") as f:
+            json.dump({
+                "status": "trained",
+                "embedding_dim": 128,
+                "epochs": epochs,
+                "best_epoch": best_epoch,
+                "test_accuracy": round(float(test_acc), 4),
+                "test_top5_accuracy": round(float(top5_acc), 4),
+                "test_macro_f1": round(float(test_macro_f1), 4),
+                "timestamp": datetime.now().isoformat()
+            }, f, indent=2)
+        print(f"DEPLOYED: Best CNN weights saved to {prod_ckpt_path} and {prod_status_path} updated!", flush=True)
+    except Exception as e:
+        print(f"Warning: Could not update production cnn_encoder.pth: {e}", flush=True)
+
     return cnn_final_metrics, df_history
 
 # ==============================================================================
@@ -1458,7 +1505,7 @@ def main():
     parser = argparse.ArgumentParser(description="FoodWise AI Comprehensive 3-Model Pipeline")
     parser.add_argument("--model", type=str, default="all", choices=["all", "cnn", "autoencoder", "ncf", "eval_only"],
                         help="Which model(s) to train and evaluate")
-    parser.add_argument("--epochs_cnn", type=int, default=30, help="Epochs for CNN encoder")
+    parser.add_argument("--epochs_cnn", type=int, default=75, help="Epochs for CNN encoder")
     parser.add_argument("--epochs_ae", type=int, default=25, help="Epochs for Autoencoder")
     parser.add_argument("--epochs_ncf", type=int, default=25, help="Epochs for NCF matcher")
     parser.add_argument("--batch_size", type=int, default=128, help="Batch size for CNN training")

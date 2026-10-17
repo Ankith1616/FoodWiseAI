@@ -1,5 +1,10 @@
 {
   "status": "trained",
   "embedding_dim": 128,
-  "epochs": 5
+  "epochs": 75,
+  "best_epoch": 29,
+  "test_accuracy": 0.5465,
+  "test_top5_accuracy": 0.9241,
+  "test_macro_f1": 0.5213,
+  "timestamp": "2026-10-17T10:33:09.822233"
 }

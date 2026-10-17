@@ -18,12 +18,28 @@ import torch
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
-# Ensure root path
-ROOT_DIR = Path(__file__).resolve().parents[4]
+def _get_project_root() -> Path:
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        if (parent / "ai").is_dir():
+            return parent
+    return current.parents[3]
+
+ROOT_DIR = _get_project_root()
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from ai.models.food_gan import FoodGANGenerator, FOOD11_CLASSES, generate_synthetic_dish
+try:
+    from ai.models.food_gan import FoodGANGenerator, FOOD11_CLASSES, generate_synthetic_dish
+    HAS_TORCH_GAN = True
+except Exception as e:
+    HAS_TORCH_GAN = False
+    FOOD11_CLASSES = [
+        "Bread", "Dairy product", "Dessert", "Egg", "Fried food",
+        "Meat", "Noodles-Pasta", "Rice", "Seafood", "Soup", "Vegetable-Fruit"
+    ]
+    FoodGANGenerator = None  # type: ignore
+    generate_synthetic_dish = None  # type: ignore
 
 router = APIRouter()
 
@@ -41,6 +57,8 @@ _generator_latent_dim: int = 100
 def get_generator() -> FoodGANGenerator:
     """Loads or retrieves cached FoodGANGenerator instance."""
     global _generator_instance, _generator_latent_dim
+    if not HAS_TORCH_GAN:
+        raise HTTPException(status_code=503, detail="FoodGAN generative engine is currently unavailable on this instance.")
     if _generator_instance is not None:
         return _generator_instance
 

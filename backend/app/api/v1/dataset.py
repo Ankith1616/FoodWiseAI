@@ -10,7 +10,15 @@ from app.models.dishes import SEED_DISHES
 
 router = APIRouter()
 
-DATASET_DIR = Path(__file__).resolve().parents[4] / "ai" / "data" / "train"
+def _get_project_root() -> Path:
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        if (parent / "ai").is_dir():
+            return parent
+    return current.parents[3]
+
+ROOT_DIR = _get_project_root()
+DATASET_DIR = ROOT_DIR / "ai" / "data" / "train"
 
 
 @router.get("/images", tags=["dataset"])
