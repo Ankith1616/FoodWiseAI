@@ -59,7 +59,12 @@ STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, RedirectResponse
+
+@app.get("/", include_in_schema=False)
+async def root():
+    """Redirect root path directly to interactive API documentation."""
+    return RedirectResponse(url="/docs")
 
 @app.get("/dataset/{file_path:path}")
 async def get_dataset_file(file_path: str):
